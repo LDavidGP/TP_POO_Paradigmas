@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using TP_POO_Paradigmas.Services;
+using TP_POO_Paradigmas.Scenes;
+
+Console.Title = "TP:POO";
+new Engine(new MenuScene()).Start();
