@@ -1,10 +1,11 @@
 using System.Drawing;
-using TP_POO_Paradigmas.Enums;
-using TP_POO_Paradigmas.Interfaces;
+using TP_POO_Paradigmas.Console.Engine.Enums;
+using TP_POO_Paradigmas.Console.Engine.Interfaces;
+using TP_POO_Paradigmas.Console.Engine.Models;
 using TP_POO_Paradigmas.Models;
 using TP_POO_Paradigmas.Services;
 
-namespace TP_POO_Paradigmas.Scenes;
+namespace TP_POO_Paradigmas.Console.Engine.Scenes;
 
 /// <summary>
 /// Escena principal del menú acorde a la consigna del TP:
