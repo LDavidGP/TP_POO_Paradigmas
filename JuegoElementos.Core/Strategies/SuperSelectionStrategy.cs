@@ -1,0 +1,12 @@
+using JuegoElementos.Core.Domain;
+
+namespace JuegoElementos.Core.Strategies
+{
+    public class SuperSelectionStrategy : ISelectionStrategy
+    {
+        public Element SelectElement(List<Element> availableElements)
+        {
+            throw new NotImplementedException("Super selection strategy is not implemented yet.");
+        }
+    }
+}
