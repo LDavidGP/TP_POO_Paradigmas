@@ -7,11 +7,11 @@ namespace JuegoElementos.Core.Abstractions
     {
         void ShowMainMenu();
         void ShowGameStart(Player human, Player ai, string strategyName);
-        void ShowBattlefield(Element humanCard, int currentHumanCards, Element aiCard, int currentAiCards);
-        void ShowCardPresented(Player owner, Element card);
+        void ShowBattlefield(Element humanElement, int currentHumanElements, Element aiElement, int currentAiElements);
+        void ShowElementPresented(Player owner, Element element);
         void ShowAttack(Element attacker, Element defender, int damageDealt); //To show feedback in each hit.
-        void ShowCardDefeated(Player owner, Element defeatedCard);
-        Element RequestCardSelection(IReadOnlyList<Element> availableCards); //To ask the user to pick a new card
-        void ShowMatchEnd(Player winner);
+        void ShowElementDefeated(Player owner, Element defeatedElement);
+        Element RequestElementSelection(IReadOnlyList<Element> aliveElements); //To ask the user to pick a new element to play.
+        void ShowDuelEnd(Player winner);
     }
 }

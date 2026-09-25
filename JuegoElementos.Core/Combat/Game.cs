@@ -3,16 +3,19 @@ using JuegoElementos.Core.Domain;
 
 namespace JuegoElementos.Core.Combat
 {
-    public class Game(Player humanPlayer, Player aiPlayer, IGameView view)
+    public class Game(Player humanPlayer, Player aiPlayer, DamageCalculator damageCalculator, IGameView view)
     {
-        private Player HumanPlayer { get; set; } = humanPlayer;
-        private Player AiPlayer { get; set; } = aiPlayer;
-        public Duel Duel { get; private set; } = new Duel(view);
-        public bool IsFinished => !HumanPlayer.HasAliveElements || !AiPlayer.HasAliveElements;
-        public IGameView View { get; private set; } = view;
+        private readonly Player _humanPlayer = humanPlayer;
+        private readonly Player _aiPlayer = aiPlayer;
+        private readonly DamageCalculator _damageCalculator = damageCalculator;
+        private readonly IGameView _gameview = view;
+
+        public bool IsFinished { get; private set; } = false;
         public void Start()
         {
-            throw new NotImplementedException();
+            Duel duel = new Duel(_humanPlayer, _aiPlayer, _damageCalculator, _gameview);
+            _gameview.ShowDuelEnd(duel.Winner);
+            IsFinished = true;
         }
     }
 }

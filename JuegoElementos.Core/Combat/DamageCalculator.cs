@@ -17,5 +17,17 @@ namespace JuegoElementos.Core.Combat
             { (new EarthType(), new WaterType()), 10 },
             { (new EarthType(), new EarthType()), 10 }
         };
+
+        public int CalculateDamage(IElementType attacker, IElementType defender)
+        {
+            if (DamageMatrix.TryGetValue((attacker, defender), out int damage))
+            {
+                return damage;
+            }
+            else
+            {
+                throw new ArgumentException($"Damage not defined for attacker {attacker.GetType().Name} and defender {defender.GetType().Name}");
+            }
+        }
     }
 }
