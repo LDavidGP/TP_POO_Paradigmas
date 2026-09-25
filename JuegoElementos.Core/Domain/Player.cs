@@ -6,7 +6,7 @@ namespace JuegoElementos.Core.Domain
     {
         private readonly ISelectionStrategy _selectionStrategy = selectionStrategy;
         public string Name { get; private set; } = name;
-        public Deck Deck { get; set; } = deck ?? new Deck([]);
+        public Deck Deck { get; private set; } = deck ?? new Deck([]);
 
         public bool HasAliveElements => Deck.Cards.Any(c => c.IsAlive);
 

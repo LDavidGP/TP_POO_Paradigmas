@@ -1,13 +1,21 @@
 using JuegoElementos.Core.Domain;
+using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.Core.Factories
 {
     public class DeckFactory
     {
-        public static List<Element> CreateDeck()
+        public Deck? CreateDeck()
         {
-            // Logic to create and return a deck of elements
-            return new List<Element>();
+            List<Element> cards = [
+                new Element(new EarthType()),
+                new Element(new EarthType()),
+                new Element(new EarthType()),
+                new Element(new EarthType()),
+                new Element(new EarthType()),
+            ];
+
+            return new Deck(cards);
         }
     }
 }

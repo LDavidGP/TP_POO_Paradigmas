@@ -12,7 +12,12 @@ namespace JuegoElementos.Core.Combat
         public IGameView View { get; private set; } = view;
         public void Start()
         {
-            throw new NotImplementedException();
+            var initialSelection = view.RequestCardSelection(humanPlayer.Deck.Cards);
+            view.ShowBattlefield(initialSelection,1/*To-Do:Change*/,
+                AiPlayer.SelectElement(),AiPlayer.Deck.Cards.Count(a=>a.IsAlive));
+            view.ShowMatchEnd(humanPlayer);
+            Console.WriteLine("Falta implementar...");
+            Console.ReadKey();
         }
     }
 }
