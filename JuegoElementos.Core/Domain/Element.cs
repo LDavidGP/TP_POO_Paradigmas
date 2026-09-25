@@ -2,11 +2,19 @@ using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.Core.Domain
 {
-    public class Element(IElementType type)
+    public class Element
     {
-        public IElementType Type { get; } = type;
-        public int Health { get; private set; } = 100;
+        public IElementType Type { get; }
+        public int MaxHealth { get;}
+        public int Health { get; private set; }
         public bool IsAlive => Health > 0;
+
+        public Element(IElementType type, int maxHealth = 100)
+        {
+            Type = type;
+            MaxHealth = Math.Max(1, maxHealth);
+            Health = MaxHealth;
+        }
         public void TakeDamage(int damage)
         {
             if (!IsAlive)

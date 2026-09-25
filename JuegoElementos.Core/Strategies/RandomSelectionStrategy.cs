@@ -5,6 +5,7 @@ namespace JuegoElementos.Core.Strategies
     public class RandomSelectionStrategy : ISelectionStrategy
     {
         private readonly Random random = new();
+        public string Name => "Aleatoria";
 
         public Element SelectElement(List<Element> availableElements)
         {

@@ -5,9 +5,9 @@ namespace JuegoElementos.Core.Abstractions
 {
     public interface IGameView
     {
-        void ShowMainMenu();
+        string WelcomePlayer();
         void ShowGameStart(Player human, Player ai, string strategyName);
-        void ShowBattlefield(Element humanCard, int currentHumanCards, Element aiCard, int currentAiCards);
+        void ShowBattlefield(Element humanCard, int remHumanCards, Element aiCard, int remAiCards);
         void ShowCardPresented(Player owner, Element card);
         void ShowAttack(Element attacker, Element defender, int damageDealt); //To show feedback in each hit.
         void ShowCardDefeated(Player owner, Element defeatedCard);
