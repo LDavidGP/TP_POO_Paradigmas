@@ -13,10 +13,22 @@ namespace JuegoElementos.Core.Combat
         public bool IsFinished { get; private set; } = false;
         public void Start()
         {
-            _gameview.ShowGameStart(_humanPlayer, _aiPlayer, "Estrategia por defecto");
+            var initialSelection = _gameview.RequestElementSelection(_humanPlayer.Elements);
+            _gameview.ShowBattlefield(
+                initialSelection, 
+                _humanPlayer.AliveElements.Count, //TODO: Change something idk
+                _aiPlayer.SelectElement(),
+                _aiPlayer.AliveElements.Count
+            );
+
+            // Duel 
             Duel duel = new Duel(_humanPlayer, _aiPlayer, _damageCalculator, _gameview);
             _gameview.ShowDuelEnd(duel.GetWinner());
-            IsFinished = true;
+            IsFinished = duel.IsFinished;
+
+            // IDK
+            Console.WriteLine("Falta implementar...");
+            Console.ReadKey();
         }
     }
 }

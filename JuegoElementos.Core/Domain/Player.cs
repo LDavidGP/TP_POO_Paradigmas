@@ -10,7 +10,7 @@ namespace JuegoElementos.Core.Domain
 
         public bool HasAliveElements => _deck.HasAliveElements;
         public IReadOnlyList<Element> AliveElements => _deck.AliveElements;
-
+        public IReadOnlyList<Element> Elements => _deck.Elements;
         public Element SelectElement()
         {
             if (!HasAliveElements)
