@@ -12,9 +12,7 @@ public class Round(Element attacker, Element defender, DamageCalculator damageCa
     private readonly Element _attacker = attacker;
     private readonly Element _defender = defender;
 
-    public Element Winner => GetWinner();
-
-    private Element GetWinner()
+    public Element GetWinner()
     {
         if (_attacker == null || _defender == null)
         {

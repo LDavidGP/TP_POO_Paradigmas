@@ -17,7 +17,7 @@ namespace JuegoElementos.Core.Domain
             {
                 throw new InvalidOperationException("No hay elementos vivos para seleccionar.");
             }
-            return _selectionStrategy.SelectElement(_deck.AliveElements.ToList());
+            return _selectionStrategy.SelectElement(AliveElements);
         }
     }
 }

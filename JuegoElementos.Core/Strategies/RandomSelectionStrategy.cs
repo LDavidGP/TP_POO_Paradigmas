@@ -6,7 +6,7 @@ namespace JuegoElementos.Core.Strategies
     {
         private readonly Random random = new();
 
-        public Element SelectElement(List<Element> availableElements)
+        public Element SelectElement(IReadOnlyList<Element> availableElements)
         {
             if (availableElements == null || availableElements.Count == 0)
             {

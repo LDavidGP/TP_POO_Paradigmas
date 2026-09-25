@@ -6,9 +6,11 @@ namespace JuegoElementos.Core.Strategies
     public class HumanSelectionStrategy(IGameView gameView) : ISelectionStrategy
     {
         readonly IGameView _gameView = gameView;
-        public Element SelectElement(List<Element> availableElements)
+        public Element SelectElement(IReadOnlyList<Element> availableElements)
         {
-            throw new NotImplementedException("Human selection strategy is not implemented yet.");
+            var rand = new Random();
+            var index = rand.Next(availableElements.Count);
+            return availableElements[index];
         }
     }
 }

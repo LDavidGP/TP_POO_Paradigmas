@@ -13,8 +13,9 @@ namespace JuegoElementos.Core.Combat
         public bool IsFinished { get; private set; } = false;
         public void Start()
         {
+            _gameview.ShowGameStart(_humanPlayer, _aiPlayer, "Estrategia por defecto");
             Duel duel = new Duel(_humanPlayer, _aiPlayer, _damageCalculator, _gameview);
-            _gameview.ShowDuelEnd(duel.Winner);
+            _gameview.ShowDuelEnd(duel.GetWinner());
             IsFinished = true;
         }
     }

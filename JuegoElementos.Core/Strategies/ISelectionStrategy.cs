@@ -4,6 +4,6 @@ namespace JuegoElementos.Core.Strategies
 {
     public interface ISelectionStrategy
     {
-        Element SelectElement(List<Element> availableElements);
+        Element SelectElement(IReadOnlyList<Element> availableElements);
     }
 }

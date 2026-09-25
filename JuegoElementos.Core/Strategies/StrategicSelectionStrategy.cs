@@ -4,7 +4,7 @@ namespace JuegoElementos.Core.Strategies
 {
     public class StrategicSelectionStrategy : ISelectionStrategy
     {
-        public Element SelectElement(List<Element> availableElements)
+        public Element SelectElement(IReadOnlyList<Element> availableElements)
         {
             throw new NotImplementedException("Strategic selection strategy is not implemented yet.");
         }
