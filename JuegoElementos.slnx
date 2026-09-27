@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="JuegoElementos.ConsoleApp/JuegoElementos.ConsoleApp.csproj" />
   <Project Path="JuegoElementos.Core/JuegoElementos.Core.csproj" />
+  <Project Path="JuegoElementos.Tests/JuegoElementos.Tests.csproj" />
 </Solution>
