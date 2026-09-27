@@ -1,13 +1,20 @@
 namespace JuegoElementos.Core.Domain
 {
-    public class Deck(List<Element> elements)
+    public class Deck
     {
-        private readonly List<Element> _elements = elements;
-        private List<Element> _aliveElements => _elements.Where(e => e.IsAlive).ToList();
-
+        private readonly List<Element> _elements;
+        public Deck(IEnumerable<Element> elements)
+        {
+            ArgumentNullException.ThrowIfNull(elements);
+            _elements = new List<Element>(elements); //Copia
+        }
         public IReadOnlyList<Element> Elements => _elements.AsReadOnly();
-        public IReadOnlyList<Element> AliveElements => _aliveElements.AsReadOnly();
-        public bool HasAliveElements => _aliveElements.Count > 0;
+        
+        public IReadOnlyList<Element> AliveElements => _elements.Where(e => e.IsAlive).ToList().AsReadOnly();
+
+        public bool HasAliveElements => _elements.Any(e => e.IsAlive);
+        
+        public int RemainingAliveCount => _elements.Count(e => e.IsAlive);
 
         public Element GetElementAt(int index)
         {
@@ -15,7 +22,6 @@ namespace JuegoElementos.Core.Domain
             {
                 throw new ArgumentOutOfRangeException(nameof(index), "Índice fuera de rango.");
             }
-
             return _elements[index];
         }
     }

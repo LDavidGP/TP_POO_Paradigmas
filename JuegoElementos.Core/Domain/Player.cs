@@ -7,9 +7,10 @@ namespace JuegoElementos.Core.Domain
         public string Name { get; private set; } = name;
 
         public bool HasAliveElements => deck.HasAliveElements;
-        public IReadOnlyList<Element> AliveElements => deck.AliveElements;
         public IReadOnlyList<Element> Elements => deck.Elements;
-        public int RemainingElements => AliveElements.Count;
+        public IReadOnlyList<Element> AliveElements => deck.AliveElements;
+        public int RemainingElements => deck.RemainingAliveCount;
+
         public Element SelectElement(CombatContext context)
         {
             return !HasAliveElements ? throw new InvalidOperationException("No hay elementos vivos para seleccionar.") 

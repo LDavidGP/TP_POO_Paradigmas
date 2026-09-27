@@ -6,17 +6,14 @@ public static class ConsoleInputReader
     {
         while (true)
         {
-            var keyInfo = Console.ReadKey(intercept: true);
+            var input = Console.ReadLine();
 
-            if (char.IsDigit(keyInfo.KeyChar))
+            if (int.TryParse(input, out var value) && value >= min && value <= max)
             {
-                var value = keyInfo.KeyChar - '0';
-
-                if (value >= min && value <= max)
-                {
-                    return value;
-                }
+                return value;
             }
+
+            Console.Write($" Entrada inválida. Ingrese un número entre {min} y {max}: ");
+        }
         }
     }
-}

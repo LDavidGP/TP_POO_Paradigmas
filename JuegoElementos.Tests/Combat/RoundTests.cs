@@ -40,29 +40,44 @@ public class RoundTests
     }
 
     [Fact]
-    public void GetWinner_WhenAttackerIsNull_ThrowsArgumentNullException()
+    public void Execute_WhenAttackerIsNull_ThrowsArgumentNullException()
     {
         var listener = new FakeCombatListener();
         var calculator = new FixedDamageCalculator(10);
         var defender = new Element(new WaterType());
         var round = new Round(null!, defender, calculator, listener);
 
-        Assert.Throws<ArgumentNullException>(() => round.GetWinner());
+        Assert.Throws<ArgumentNullException>(() => round.Execute());
     }
 
     [Fact]
-    public void GetWinner_WhenDefenderIsNull_ThrowsArgumentNullException()
+    public void Execute_WhenDefenderIsNull_ThrowsArgumentNullException()
     {
         var listener = new FakeCombatListener();
         var calculator = new FixedDamageCalculator(10);
         var attacker = new Element(new FireType());
         var round = new Round(attacker, null!, calculator, listener);
 
-        Assert.Throws<ArgumentNullException>(() => round.GetWinner());
+        Assert.Throws<ArgumentNullException>(() => round.Execute());
     }
 
     [Fact]
-    public void GetWinner_AttackerEliminatesDefenderInOneHit_ReturnsAttackerAndNotifiesAttack()
+    public void Execute_WhenOneElementAlreadyDead_DoesNotAttack()
+    {
+        var listener = new FakeCombatListener();
+        var calculator = new FixedDamageCalculator(20);
+        var attacker = new Element(new FireType(), 100);
+        var deadDefender = new Element(new WaterType(), 50);
+        deadDefender.TakeDamage(50);
+
+        var round = new Round(attacker, deadDefender, calculator, listener);
+        round.Execute();
+
+        Assert.Empty(listener.Attacks);
+    }
+
+    [Fact]
+    public void Execute_AttackerEliminatesDefenderInOneHit_NotifiesOnlyAttackerAttack()
     {
         // Arrange
         var listener = new FakeCombatListener();
@@ -72,10 +87,9 @@ public class RoundTests
         var round = new Round(attacker, defender, calculator, listener);
 
         // Act
-        var winner = round.GetWinner();
+        round.Execute();
 
         // Assert
-        Assert.Same(attacker, winner);
         Assert.True(attacker.IsAlive);
         Assert.False(defender.IsAlive);
         Assert.Single(listener.Attacks);
@@ -85,12 +99,33 @@ public class RoundTests
     }
 
     [Fact]
-    public void GetWinner_DefenderEliminatesAttackerOnCounterattack_ReturnsDefender()
+    public void Execute_BothSurviveSingleRound_BothAttackAndRetainRemainingHealth()
     {
         // Arrange
         var listener = new FakeCombatListener();
-        // Attacker does 30 damage, defender has 100 hp (survives with 70)
-        // Defender does 100 damage on counterattack, attacker has 50 hp (dies)
+        var calculator = new FixedDamageCalculator(25);
+        var attacker = new Element(new FireType(), 100);
+        var defender = new Element(new WaterType(), 100);
+        var round = new Round(attacker, defender, calculator, listener);
+
+        // Act (Executes exactly one round / exchange)
+        round.Execute();
+
+        // Assert
+        Assert.True(attacker.IsAlive);
+        Assert.True(defender.IsAlive);
+        Assert.Equal(75, attacker.Health);
+        Assert.Equal(75, defender.Health);
+        Assert.Equal(2, listener.Attacks.Count);
+        Assert.Equal(25, listener.Attacks[0].Damage);
+        Assert.Equal(25, listener.Attacks[1].Damage);
+    }
+
+    [Fact]
+    public void Execute_DefenderEliminatesAttackerOnCounterattack_KillsAttacker()
+    {
+        // Arrange
+        var listener = new FakeCombatListener();
         var customCalc = new DamageCalculator(new Dictionary<(IElementType, IElementType), int>
         {
             { (new FireType(), new WaterType()), 30 },
@@ -102,10 +137,9 @@ public class RoundTests
         var round = new Round(attacker, defender, customCalc, listener);
 
         // Act
-        var winner = round.GetWinner();
+        round.Execute();
 
         // Assert
-        Assert.Same(defender, winner);
         Assert.False(attacker.IsAlive);
         Assert.True(defender.IsAlive);
         Assert.Equal(70, defender.Health);

@@ -10,31 +10,40 @@ public class Duel(Player player1, Player player2, IDamageCalculator damageCalcul
 
     public Player GetWinner()
     {
-        //Initial selection
-        var contextPlayer1 = new CombatContext(player1.AliveElements,null, damageCalculator);
-        var player1Element = player1.SelectElement(contextPlayer1);
-        var contextPlayer2 = new CombatContext(player2.AliveElements, player1Element, damageCalculator);
-        var player2Element = player2.SelectElement(contextPlayer2);
-        listener.OnBattlefieldUpdated(player1Element, player1.RemainingElements, player2Element, player2.RemainingElements);
+        //1- Initial elements selection
+        var contextP1 = new CombatContext(player1.AliveElements,null, damageCalculator);
+        var p1Element = player1.SelectElement(contextP1);
+        
+        var contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
+        var p2Element = player2.SelectElement(contextP2);
+        
+        //2. Combat by rounds main loop 
         while (player1.HasAliveElements && player2.HasAliveElements)
         {
-            listener.OnBattlefieldUpdated(player1Element, player1.RemainingElements, player2Element, player2.RemainingElements);
-            var round = new Round(player1Element, player2Element, damageCalculator, listener);
-            var winnerElement = round.GetWinner();
+            listener.OnBattlefieldUpdated(p1Element, player1.RemainingElements, p2Element, player2.RemainingElements);
+            
+            var round = new Round(p1Element, p2Element, damageCalculator, listener);
+            round.Execute();
 
-            if (winnerElement != player1Element)
+            if (!p1Element.IsAlive)
             {
-                listener.OnElementDefeated(player1, player1Element); // <== Show that player 1's element was defeated
-                contextPlayer1 = new CombatContext(player1.AliveElements, player2Element, damageCalculator);
-                if (player1.HasAliveElements) player1Element = player1.SelectElement(contextPlayer1);
+                listener.OnElementDefeated(player1, p1Element);
+                if (player1.HasAliveElements)
+                {
+                    contextP1 = new CombatContext(player1.AliveElements, p2Element, damageCalculator);
+                    p1Element = player1.SelectElement(contextP1);
+                }
             }
-            else if (winnerElement != player2Element)
+            
+            if (!p2Element.IsAlive)
             {
-                listener.OnElementDefeated(player2, player2Element); // <== Show that player 2's element was defeated
-                contextPlayer2 = new CombatContext(player2.AliveElements, player1Element, damageCalculator);
-                if (player2.HasAliveElements) player2Element = player2.SelectElement(contextPlayer2);
+                listener.OnElementDefeated(player2, p2Element);
+                if (player2.HasAliveElements)
+                { 
+                 contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
+                 p2Element = player2.SelectElement(contextP2);
+                }
             }
-            else throw new InvalidOperationException("Ronda terminada en un empate, lo cual no debería suceder.");
         }
 
         return player1.HasAliveElements ? player1 : player2;
