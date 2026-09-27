@@ -8,7 +8,7 @@ namespace JuegoElementos.ConsoleApp.Services;
 
 public static class ElementVisuals
 {
-    private static (string Icon, Style Style) GetVisuals(IElementType type) => type switch
+    public static (string Icon, Style Style) GetVisuals(IElementType type) => type switch
     {
         WaterType => ("💧", new Style(Color.CornflowerBlue, decoration: Decoration.Bold)),
         FireType  => ("🔥", new Style(Color.Crimson, decoration: Decoration.Bold)),
