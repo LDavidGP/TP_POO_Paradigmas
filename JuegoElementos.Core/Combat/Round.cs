@@ -3,7 +3,7 @@ using JuegoElementos.Core.Domain;
 
 namespace JuegoElementos.Core.Combat;
 
-public class Round(Element attacker, Element defender, DamageCalculator damageCalculator, ICombatEventsListener listener)
+public class Round(Element attacker, Element defender, IDamageCalculator damageCalculator, ICombatEventsListener listener)
 {
 
     // This class is used to calculate the winner of a single round which ends with one element dead

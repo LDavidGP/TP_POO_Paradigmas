@@ -8,7 +8,7 @@ public class DamageCalculatorTests
 {
     private readonly DamageCalculator _calculator = new();
 
-    public static TheoryData<IElementType, IElementType, int> ExpectedDamageMatrix =>
+    public static TheoryData<IElementType, IElementType, int> ExpectedDefaultDamageMatrix =>
         new()
         {
             { new FireType(), new WaterType(), 5 },
@@ -23,8 +23,8 @@ public class DamageCalculatorTests
         };
 
     [Theory]
-    [MemberData(nameof(ExpectedDamageMatrix))]
-    public void CalculateDamage_DefinedPairs_ReturnsExpectedDamage(
+    [MemberData(nameof(ExpectedDefaultDamageMatrix))]
+    public void CalculateDamage_DefaultMatrix_ReturnsExpectedDamage(
         IElementType attacker,
         IElementType defender,
         int expectedDamage)
@@ -53,5 +53,45 @@ public class DamageCalculatorTests
 
         // Assert
         Assert.Equal(10, damage);
+    }
+
+    [Fact]
+    public void DamageCalculator_Implements_IDamageCalculator()
+    {
+        Assert.IsAssignableFrom<IDamageCalculator>(_calculator);
+    }
+
+    [Fact]
+    public void CalculateDamage_CustomMatrix_OverridesValues()
+    {
+        // Arrange
+        var custom = new Dictionary<(IElementType, IElementType), int>
+        {
+            { (new WaterType(), new FireType()), 50 },
+            { (new FireType(), new WaterType()), 20 }
+        };
+        var customCalculator = new DamageCalculator(custom);
+
+        // Act
+        var waterVsFire = customCalculator.CalculateDamage(new WaterType(), new FireType());
+        var fireVsWater = customCalculator.CalculateDamage(new FireType(), new WaterType());
+
+        // Assert
+        Assert.Equal(50, waterVsFire);
+        Assert.Equal(20, fireVsWater);
+    }
+
+    [Fact]
+    public void CalculateDamage_CustomMatrix_FallsBackToTenForUnspecifiedPairs()
+    {
+        // Arrange
+        var custom = new Dictionary<(IElementType, IElementType), int>
+        {
+            { (new WaterType(), new FireType()), 50 }
+        };
+        var customCalculator = new DamageCalculator(custom);
+
+        // Act & Assert
+        Assert.Equal(10, customCalculator.CalculateDamage(new EarthType(), new EarthType()));
     }
 }

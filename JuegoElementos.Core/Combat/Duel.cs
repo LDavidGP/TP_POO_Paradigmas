@@ -4,7 +4,7 @@ using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.Core.Combat;
 
-public class Duel(Player player1, Player player2, DamageCalculator damageCalculator, ICombatEventsListener listener)
+public class Duel(Player player1, Player player2, IDamageCalculator damageCalculator, ICombatEventsListener listener)
 {
     public bool IsFinished => !player1.HasAliveElements || !player2.HasAliveElements;
 
