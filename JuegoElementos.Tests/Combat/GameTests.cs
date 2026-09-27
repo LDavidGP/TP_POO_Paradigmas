@@ -7,13 +7,13 @@ using Xunit;
 
 namespace JuegoElementos.Tests.Combat;
 
-public class DuelTests
+public class GameTests
 {
     private class TestCombatListener : ICombatEventsListener
     {
         public List<(Element Attacker, Element Defender, int Damage)> Attacks { get; } = [];
         public List<(Player Owner, Element Defeated)> DefeatedList { get; } = [];
-        public List<(Element P1, int P1Alive, Element P2, int P2Alive)> BattlefieldUpdates { get; } = [];
+        public List<(Element P1, int P1Remaining, Element P2, int P2Remaining)> BattlefieldUpdates { get; } = [];
         public List<Player> Winners { get; } = [];
 
         public void OnAttackOccurred(Element attacker, Element defender, int damageDealt)
@@ -26,9 +26,9 @@ public class DuelTests
             DefeatedList.Add((owner, defeatedElement));
         }
 
-        public void OnBattlefieldUpdated(Element player1Element, int humanAlive, Element player2Element, int aiAlive)
+        public void OnBattlefieldUpdated(Element p1Element, int p1Remaining, Element p2Element, int p2Remaining)
         {
-            BattlefieldUpdates.Add((player1Element, humanAlive, player2Element, aiAlive));
+            BattlefieldUpdates.Add((p1Element, p1Remaining, p2Element, p2Remaining));
         }
 
         public void OnCombatEnded(Player winner)
@@ -49,7 +49,7 @@ public class DuelTests
     }
 
     [Fact]
-    public void Duel_SingleElementPerPlayer_Player1WinsWhenPlayer2Falls()
+    public void Game_SingleElementPerPlayer_Player1WinsWhenPlayer2Falls()
     {
         // Arrange
         var listener = new TestCombatListener();
@@ -62,23 +62,25 @@ public class DuelTests
         var player1 = new Player("Jugador 1", strategy, new Deck([p1Element]));
         var player2 = new Player("IA", strategy, new Deck([p2Element]));
 
-        var duel = new Duel(player1, player2, calc, listener);
+        var game = new Game(player1, player2, calc, listener);
 
         // Act
-        var winner = duel.GetWinner();
+        var winner = game.Play();
 
         // Assert
         Assert.Same(player1, winner);
-        Assert.True(duel.IsFinished);
+        Assert.True(game.IsFinished);
         Assert.True(player1.HasAliveElements);
         Assert.False(player2.HasAliveElements);
         Assert.Single(listener.DefeatedList);
         Assert.Same(player2, listener.DefeatedList[0].Owner);
         Assert.Same(p2Element, listener.DefeatedList[0].Defeated);
+        Assert.Single(listener.Winners);
+        Assert.Same(player1, listener.Winners[0]);
     }
 
     [Fact]
-    public void Duel_MultiRoundCombat_SelectsReplacementWhenFirstElementFalls()
+    public void Game_MultiRoundCombat_SelectsReplacementWhenFirstElementFalls()
     {
         // Arrange: Player 1 has 2 elements of 40 HP each.
         // Player 2 has 1 element of 100 HP.
@@ -98,14 +100,14 @@ public class DuelTests
         var player1 = new Player("Jugador 1", strategy, new Deck([p1Elem1, p1Elem2]));
         var player2 = new Player("IA", strategy, new Deck([p2Elem]));
 
-        var duel = new Duel(player1, player2, calc, listener);
+        var game = new Game(player1, player2, calc, listener);
 
         // Act
-        var winner = duel.GetWinner();
+        var winner = game.Play();
 
         // Assert
         Assert.Same(player1, winner);
-        Assert.True(duel.IsFinished);
+        Assert.True(game.IsFinished);
         Assert.False(p1Elem1.IsAlive);
         Assert.True(p1Elem2.IsAlive);
         Assert.False(p2Elem.IsAlive);
@@ -114,5 +116,7 @@ public class DuelTests
         Assert.Same(p1Elem1, listener.DefeatedList[0].Defeated);
         Assert.Same(player2, listener.DefeatedList[1].Owner);
         Assert.Same(p2Elem, listener.DefeatedList[1].Defeated);
+        Assert.Single(listener.Winners);
+        Assert.Same(player1, listener.Winners[0]);
     }
 }

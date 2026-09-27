@@ -8,7 +8,7 @@ namespace JuegoElementos.ConsoleApp.Services;
 
 public static class ElementVisuals
 {
-    public static (string Icon, Style Style) GetVisuals(IElementType type) => type switch
+    private static (string Icon, Style Style) GetVisuals(IElementType type) => type switch
     {
         WaterType => ("💧", new Style(Color.CornflowerBlue, decoration: Decoration.Bold)),
         FireType  => ("🔥", new Style(Color.Crimson, decoration: Decoration.Bold)),
@@ -16,21 +16,27 @@ public static class ElementVisuals
         _         => ("⚔️", new Style(Color.White, decoration: Decoration.Bold))
     };
 
-    /// <summary>
-    /// returns the name with color and icon
-    /// </summary>
-    public static string ToColoredString(this Element element)
-    {
-        var (icon, style) = GetVisuals(element.Type);
-        return $"{Ansi.GetStyleSequence(style)}{icon} {element.Type.Name}{Ansi.Reset}";
-    }
+    public static Style GetStyle(IElementType type) => GetVisuals(type).Style;
+    public static string GetIcon(IElementType type) => GetVisuals(type).Icon;
 
-    /// <summary>
-    /// Returns a  badge compacted with the health
-    /// </summary>
-    public static string ToBadge(this Element element)
+    extension(Element element)
     {
-        var percentage = (int)Math.Round((double)element.Health / element.MaxHealth * 100);
-        return $"{element.ToColoredString()} ({percentage}%)";
+        /// <summary>
+        /// returns the name with color and icon
+        /// </summary>
+        public string ToColoredString()
+        {
+            var (icon, style) = GetVisuals(element.Type);
+            return $"{Ansi.GetStyleSequence(style)}{icon} {element.Type.Name}{Ansi.Reset}";
+        }
+
+        /// <summary>
+        /// Returns a  badge compacted with the health
+        /// </summary>
+        public string ToBadge()
+        {
+            var percentage = (int)Math.Round((double)element.Health / element.MaxHealth * 100);
+            return $"{element.ToColoredString()} ({percentage}%)";
+        }
     }
 }

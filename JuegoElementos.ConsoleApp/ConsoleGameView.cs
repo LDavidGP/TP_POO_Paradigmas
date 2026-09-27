@@ -3,129 +3,36 @@ using JuegoElementos.ConsoleApp.Models;
 using JuegoElementos.Core.Abstractions;
 using JuegoElementos.Core.Domain;
 using JuegoElementos.ConsoleApp.Renderers;
+using JuegoElementos.ConsoleApp.Screens;
 using JuegoElementos.ConsoleApp.Services;
 using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.ConsoleApp
 {
     public class ConsoleGameView(
-        ElementRenderer? elementRenderer = null, 
-        CombatLogRenderer? logRenderer = null) : IGameView, ICombatEventsListener, IElementSelector
+        BattlefieldRenderer? battlefieldRenderer = null): ICombatEventsListener, IElementSelector
     {
-        private readonly ElementRenderer _elementRenderer = elementRenderer ?? new();
-        private readonly CombatLogRenderer _logRenderer = logRenderer ?? new();
+        private readonly BattlefieldRenderer _battlefieldRenderer = battlefieldRenderer ?? new();
         private readonly CombatLog _combatLog = new();
 
-        private Element? _humanElement;
-        private Element? _aiElement;
+        private Element? _p1Element;
+        private Element? _p2Element;
         private int _humanRemaining;
         private int _aiRemaining;
-        private static int GetTerminalWidth() =>
-            Console.IsOutputRedirected ? 80 : Math.Max(Console.WindowWidth, 80);
 
-        public void ShowAttack(Element attacker, Element defender, int damageDealt)
+        public string WelcomePlayer() => ConsoleScreens.ShowWelcome();
+
+        public void ShowGameStart(Player p1, Player p2, string strategyName) => 
+            ConsoleScreens.ShowGameStart(p1,p2, strategyName,
+                _battlefieldRenderer.GetTerminalWidth());
+
+        public Element RequestElement(CombatContext context)
         {
-            _combatLog.AddLogMessage($"{attacker.ToColoredString()} causó {damageDealt} pts de daño a {defender.ToColoredString()}.");
-            Thread.Sleep(300);
+            ArgumentNullException.ThrowIfNull(context);
+            return RequestElementSelection(context.AvailableElements);
         }
 
-        public void ShowBattlefield(Element humanElement, int remHumanElements, Element aiElement, int remAiElements)
-        {_humanElement = humanElement;
-            _humanRemaining = remHumanElements;
-            _aiElement = aiElement;
-            _aiRemaining = remAiElements;
-            RedrawBattlefield();
-        }
-
-        public void RedrawBattlefield()
-        {
-            if (_humanElement == null || _aiElement == null) return;
-
-            Console.Clear();
-            var width = GetTerminalWidth();
-            DrawHeader(width);
-
-            var sideMargin = 4;
-            var middleGap = Math.Max(4, width - (2 * 22) - (2 * sideMargin));
-            var marginSpaces = new string(' ', sideMargin);
-            var gapSpaces = new string(' ', middleGap);
-
-            // headers
-            var playerHeaderFormat = $"{marginSpaces}{{0,-{22}}}{{1}}{{2,-{22}}}";
-            Console.WriteLine(string.Format(playerHeaderFormat, "[ JUGADOR HUMANO ]", gapSpaces, "[ IA OPONENTE ]"));
-
-            // Element render
-            var humanLines = _elementRenderer.Render(_humanElement);
-            var aiLines = _elementRenderer.Render(_aiElement);
-
-            for (var i = 0; i < humanLines.Count; i++)
-            {
-                var centerText = (i == 2) ? CenterText("VS", middleGap) : gapSpaces;
-                Console.WriteLine($"{marginSpaces}{humanLines[i]}{centerText}{aiLines[i]}");
-            }
-            var logLines = _logRenderer.Render(_combatLog, width);
-            foreach (var line in logLines)
-            {
-                Console.WriteLine(line);
-            }
-        }
-
-        private void DrawHeader(int width)
-        {
-            Console.WriteLine(new string('=', width));
-            const string title = "BATALLA DE ELEMENTOS: AGUA - TIERRA - FUEGO";
-            var spaces = Math.Max(0, (width - title.Length) / 2);
-            Console.WriteLine($"{new string(' ', spaces)}{title}");
-    
-            Console.WriteLine(new string('=', width));
-        }
-
-        public string WelcomePlayer()
-        {
-            string? name;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("==================================================");
-                Console.WriteLine("        JUEGO DE ELEMENTOS (TP POO)               ");
-                Console.WriteLine("==================================================");
-                Console.WriteLine("BIENVENIDO!");
-                Console.Write("Cómo quieres que te llamemos? : ");
-                name = Console.ReadLine();
-            } while (string.IsNullOrEmpty(name));
-            Console.WriteLine($"Perfecto! {name}");
-            Thread.Sleep(300);
-            return name;
-        }
-
-        public void ShowGameStart(Player human, Player ai, string strategyName)
-        {
-            Console.Clear();
-            var width = GetTerminalWidth();
-            DrawHeader(width);
-            Console.WriteLine("\n");
-            Console.WriteLine($"   ¡Bienvenido, {human.Name}!");
-            Thread.Sleep(300);
-            Console.WriteLine($"   Te enfrentarás a: {ai.Name} (Dificultad/Estrategia: {strategyName})");
-            Console.WriteLine("\n");
-            Console.Write("   Presiona cualquier tecla para comenzar...");
-            Console.ReadKey(intercept: true);
-            Console.Clear();
-        }
-
-        public void ShowElementPresented(Player owner, Element element)
-        {
-            _combatLog.AddLogMessage($"{owner.Name} envía al combate a {element.ToColoredString()}!");
-        }
-
-        public void ShowElementDefeated(Player owner, Element defeatedElement)
-        {
-            _combatLog.AddLogMessage($"☠️  {defeatedElement.ToColoredString()} de {owner.Name} ha caído.");
-            Thread.Sleep(400);
-        }
-        
-
-        public Element RequestElementSelection(IReadOnlyList<Element> aliveElements)
+        private static Element RequestElementSelection(IReadOnlyList<Element> aliveElements)
         {
             ArgumentNullException.ThrowIfNull(aliveElements);
 
@@ -136,81 +43,60 @@ namespace JuegoElementos.ConsoleApp
 
             Console.WriteLine(" Selecciona un elemento:");
 
-            // 1. Dibujar la fila de reserva usando el método de extensión ToBadge()
+            // 1. Draw remaining elements using ToBadge()
             for (var i = 0; i < aliveElements.Count; i++)
             {
                 Console.Write($" [{i + 1}] {aliveElements[i].ToBadge()}    ");
             }
             Console.WriteLine("\n");
 
-            // 2. Solicitar la entrada al usuario
+            // 2. Request user entry
             Console.Write($" >> Elige un elemento para enviar al combate (1-{aliveElements.Count}): ");
             var selectedIndex = ConsoleInputReader.ReadOption(1, aliveElements.Count);
 
-            // 3. Mapear de base 1 (UI) a base 0 (Lista)
-            return aliveElements[selectedIndex - 1];
+            // 3. map from base 1 (UI) to base 0 (List)
+            return aliveElements[selectedIndex -1];
         }
 
-        public void ShowDuelEnd(Player winner)
+        public void OnBattlefieldUpdated(Element p1Element, int p1Remaining, Element p2Element, int p2Remaining)
         {
-            Console.Clear();
-            var width = GetTerminalWidth();
-            DrawHeader(width);
-
-            Console.WriteLine("\n\n");
-    
-            var box = BoxStyle.Default;
-            var resultText = $"  🏆 ¡EL GANADOR ES {winner.Name.ToUpperInvariant()}! 🏆  ";
-
-            Console.WriteLine(BoxHelper.CreateTopBorder(width, box));
-            Console.WriteLine(BoxHelper.CreateLine(string.Empty, width, box));
-            Console.WriteLine(BoxHelper.CreateLine(resultText, width, box, center: true));
-            Console.WriteLine(BoxHelper.CreateLine(string.Empty, width, box));
-            Console.WriteLine(BoxHelper.CreateBottomBorder(width, box));
-
-            Console.WriteLine("\n   Fin de la partida");
-            Console.WriteLine("   Presiona cualquier tecla para salir...");
-            Console.ReadKey(intercept: true);
-        }
-        private static string CenterText(string text, int width)
-        {
-            // Si el texto ya es igual o más largo que el ancho disponible, no hay nada que rellenar
-            if (text.Length >= width) return text;
-
-            // Calculamos la mitad exacta de espacios para la izquierda
-            var left = (width - text.Length) / 2;
-            // El resto de espacios van a la derecha (por si la diferencia es impar)
-            var right = width - text.Length - left;
-
-            return $"{new string(' ', left)}{text}{new string(' ', right)}";
+            _p1Element = p1Element;
+            _humanRemaining = p1Remaining;
+            _p2Element = p2Element;
+            _aiRemaining = p2Remaining;
+            Redraw();
         }
 
         public void OnAttackOccurred(Element attacker, Element defender, int damage)
         {
-            ShowAttack(attacker, defender, damage);
-            RedrawBattlefield();
+            _combatLog.AddLogMessage($"{attacker.ToColoredString()} causó {damage} pts de daño a {defender.ToColoredString()}.");
+            
+            if (_p1Element != null && _p2Element != null)
+            {
+                _battlefieldRenderer.Render(_p1Element, _humanRemaining, _p2Element, _aiRemaining, _combatLog, hitElement: defender);
+                Thread.Sleep(180);
+            }
+
+            Redraw();
+            Thread.Sleep(300);
         }
 
         public void OnElementDefeated(Player owner, Element defeatedElement)
         {
-            ShowElementDefeated(owner, defeatedElement);
-            RedrawBattlefield();
-        }
-
-        public void OnBattlefieldUpdated(Element player1Element, int humanAlive, Element player2Element, int aiAlive)
-        {
-            ShowBattlefield(player1Element, humanAlive, player2Element, aiAlive);
+            _combatLog.AddLogMessage($"☠️  {defeatedElement.ToColoredString()} de {owner.Name} ha caído.");
+            Redraw();
+            Thread.Sleep(400);
         }
 
         public void OnCombatEnded(Player winner)
         {
-            ShowDuelEnd(winner);
-        }
-
-        public Element RequestElement(CombatContext context)
-        {
-            return RequestElementSelection(context.AvailableElements);
+            ConsoleScreens.ShowDuelEnd(winner, _battlefieldRenderer.GetTerminalWidth());
         }
         
+        private void Redraw()
+        {
+            if (_p1Element == null || _p2Element == null) return;
+            _battlefieldRenderer.Render(_p1Element, _humanRemaining, _p2Element, _aiRemaining, _combatLog);
+        }
     }
 }

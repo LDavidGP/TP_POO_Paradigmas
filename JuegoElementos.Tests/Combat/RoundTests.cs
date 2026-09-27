@@ -24,7 +24,7 @@ public class RoundTests
             DefeatedElements.Add((owner, defeatedElement));
         }
 
-        public void OnBattlefieldUpdated(Element player1Element, int humanAlive, Element player2Element, int aiAlive)
+        public void OnBattlefieldUpdated(Element p1Element, int p1Remaining, Element p2Element, int p2Remaining)
         {
         }
 

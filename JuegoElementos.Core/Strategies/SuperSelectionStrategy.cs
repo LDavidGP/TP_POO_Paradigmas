@@ -9,7 +9,7 @@ namespace JuegoElementos.Core.Strategies
 
         public Element SelectElement(CombatContext context)
         {
-            return new Element(new WaterType());//Esteban Implementa, tener en cuenta el caso de que el elemento oponente sea null.
+            return context.AvailableElements[0];//Esteban Implementa, tener en cuenta el caso de que el elemento oponente sea null.
         }
     }
 }
