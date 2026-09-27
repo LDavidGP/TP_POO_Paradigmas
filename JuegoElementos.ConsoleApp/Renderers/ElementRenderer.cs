@@ -13,17 +13,19 @@ public class ElementRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int
     private readonly HealthBarRenderer _healthBarRenderer = new(healthBarUnits);
     private readonly int _totalWidth = Math.Max(totalWidth, 16); // min of 16 to make sure the health bar fits
 
-    public IReadOnlyList<string> Render(Element element)
+    public IReadOnlyList<string> Render(Element element, bool isInverted = false)
     {
-        var lines = new List<string>(capacity: 5);
-
+        var baseStyle = ElementVisuals.GetStyle(element.Type);
+        var activeStyle = isInverted
+            ? baseStyle with { Decoration = baseStyle.Decoration | Decoration.Invert }
+            : baseStyle;
         // row 1
-        lines.Add(BoxHelper.CreateTopBorder(_totalWidth, _boxStyle));
-
+        var lines = new List<string>(capacity: 5) {
+            BoxHelper.CreateTopBorder(_totalWidth, _boxStyle)
+        };
         // row 2
-        var elementStyle = GetElementStyle(element.Type);
         var typeName = element.Type.Name.ToUpperInvariant();
-        var coloredTypeName = $"{Ansi.GetStyleSequence(elementStyle)}{typeName}{Ansi.Reset}";
+        var coloredTypeName = $"{Ansi.GetStyleSequence(activeStyle)}{typeName}{Ansi.Reset}";
         lines.Add(BoxHelper.CreateLine(coloredTypeName, _totalWidth, _boxStyle, center: true));
 
         // row 3
@@ -38,14 +40,14 @@ public class ElementRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int
         // row 5
         lines.Add(BoxHelper.CreateBottomBorder(_totalWidth, _boxStyle));
 
+        if (isInverted)
+        {
+            var invertSeq = Ansi.GetStyleSequence(new Style(decoration: Decoration.Invert));
+            for (var i = 0; i < lines.Count; i++)
+            {
+                lines[i] = $"{invertSeq}{lines[i]}{Ansi.Reset}";
+            }
+        }
         return lines;
     }
-
-    private static Style GetElementStyle(IElementType type) => type switch
-    {
-        WaterType => new Style(Color.CornflowerBlue, decoration: Decoration.Bold),
-        FireType => new Style(Color.Crimson, decoration: Decoration.Bold),
-        EarthType => new Style(Color.MediumSeaGreen, decoration: Decoration.Bold),
-        _ => new Style(Color.White, decoration: Decoration.Bold)
-    };
 }

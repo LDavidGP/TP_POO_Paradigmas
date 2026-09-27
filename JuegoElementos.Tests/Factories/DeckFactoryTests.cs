@@ -47,7 +47,7 @@ public class DeckFactoryTests
         };
 
         // Act
-        var deck = _factory.CreateDeck(elements);
+        var deck = DeckFactory.CreateDeck(elements);
 
         // Assert
         Assert.Equal(2, deck.Elements.Count);
@@ -57,7 +57,7 @@ public class DeckFactoryTests
     public void CreateDeck_WithNullList_ReturnsEmptyDeck()
     {
         // Act
-        var deck = _factory.CreateDeck((List<Element>)null!);
+        var deck = DeckFactory.CreateDeck((List<Element>)null!);
 
         // Assert
         Assert.NotNull(deck);

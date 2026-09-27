@@ -14,7 +14,7 @@ namespace JuegoElementos.Core.Strategies
                 throw new ArgumentException("Available elements list cannot be null or empty.");
             }
 
-            int randomIndex = random.Next(context.AvailableElements.Count);
+            var randomIndex = random.Next(context.AvailableElements.Count);
             return context.AvailableElements[randomIndex];
         }
     }

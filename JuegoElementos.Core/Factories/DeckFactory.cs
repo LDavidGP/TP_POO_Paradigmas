@@ -1,50 +1,30 @@
 using JuegoElementos.Core.Domain;
 using JuegoElementos.Core.ElementTypes;
-
 namespace JuegoElementos.Core.Factories;
-
-
-public class DeckFactory
+public class DeckFactory(IReadOnlyList<Func<IElementType>>? customAvailableTypes = null)
 {
-    private static readonly Random _random = new();
-
+    private readonly IReadOnlyList<Func<IElementType>> _availableTypes = customAvailableTypes ??
+    [
+        () => new EarthType(), 
+        () => new WaterType(), 
+        () => new FireType()
+    ];
+    
     public Deck CreateDeck(int elementCount)
     {
-        if (elementCount < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(elementCount), "La cantidad de elementos no puede ser negativa.");
-        }
-
+        ArgumentOutOfRangeException.ThrowIfNegative(elementCount, nameof(elementCount));
         var elements = new List<Element>(elementCount);
-
-        for (int i = 0; i < elementCount; i++)
+        
+        for (var i = 0; i < elementCount; i++)
         {
-            IElementType randomElementType = CreateRandomElementType();
-            elements.Add(new Element(randomElementType));
+            var factoryMethod = _availableTypes[Random.Shared.Next(_availableTypes.Count)];
+            elements.Add(new Element(factoryMethod()));
         }
-
         return new Deck(elements);
     }
 
-    public Deck CreateDeck(List<Element> elements)
+    public static Deck CreateDeck(List<Element>? elements = null)
     {
-        if (elements == null)
-        {
-            return new Deck(new List<Element>());
-        }
-        return new Deck(elements);
-    } 
-
-    private IElementType CreateRandomElementType()
-    {
-        var availableTypes = new Func<IElementType>[]
-        {
-            () => new EarthType(),
-            () => new WaterType(),
-            () => new FireType()
-        };
-
-        int index = _random.Next(availableTypes.Length);
-        return availableTypes[index]();
+        return elements == null ? new Deck([]) : new Deck(elements);
     }
 }
