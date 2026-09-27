@@ -1,3 +1,4 @@
+using JuegoElementos.Core.Combat;
 using JuegoElementos.Core.Domain;
 using JuegoElementos.Core.ElementTypes;
 using JuegoElementos.Core.Strategies;
@@ -8,6 +9,7 @@ namespace JuegoElementos.Tests.Strategies;
 public class RandomSelectionStrategyTests
 {
     private readonly RandomSelectionStrategy _strategy = new();
+    private static readonly DamageCalculator _calculator = new();
 
     [Fact]
     public void Name_ReturnsAleatoria()
@@ -25,9 +27,10 @@ public class RandomSelectionStrategyTests
             new(new WaterType()),
             new(new EarthType())
         };
+        var context = new CombatContext(elements, null, _calculator);
 
         // Act
-        var selected = _strategy.SelectElement(elements);
+        var selected = _strategy.SelectElement(context);
 
         // Assert
         Assert.NotNull(selected);
@@ -39,8 +42,9 @@ public class RandomSelectionStrategyTests
     {
         // Arrange
         var emptyList = new List<Element>();
+        var context = new CombatContext(emptyList, null, _calculator);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => _strategy.SelectElement(emptyList));
+        Assert.Throws<ArgumentException>(() => _strategy.SelectElement(context));
     }
 }

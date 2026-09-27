@@ -1,3 +1,4 @@
+using JuegoElementos.Core.Combat;
 using JuegoElementos.Core.Domain;
 using JuegoElementos.Core.ElementTypes;
 using JuegoElementos.Core.Strategies;
@@ -10,8 +11,11 @@ public class PlayerTests
     private class FakeSelectionStrategy(Element elementToReturn) : ISelectionStrategy
     {
         public string Name => "Fake";
-        public Element SelectElement(IReadOnlyList<Element> availableElements) => elementToReturn;
+        public Element SelectElement(CombatContext context) => elementToReturn;
     }
+
+    private static CombatContext CreateDummyContext(IReadOnlyList<Element> elements) =>
+        new(elements, null, new DamageCalculator());
 
     [Fact]
     public void Constructor_InitializesPlayerProperties()
@@ -40,9 +44,10 @@ public class PlayerTests
         var deck = new Deck(elements);
         var strategy = new FakeSelectionStrategy(chosenElement);
         var player = new Player("Test", strategy, deck);
+        var context = CreateDummyContext(player.AliveElements);
 
         // Act
-        var result = player.SelectElement();
+        var result = player.SelectElement(context);
 
         // Assert
         Assert.Same(chosenElement, result);
@@ -57,8 +62,9 @@ public class PlayerTests
         var deck = new Deck(new List<Element> { element });
         var strategy = new FakeSelectionStrategy(element);
         var player = new Player("Test", strategy, deck);
+        var context = CreateDummyContext(player.AliveElements);
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => player.SelectElement());
+        Assert.Throws<InvalidOperationException>(() => player.SelectElement(context));
     }
 }

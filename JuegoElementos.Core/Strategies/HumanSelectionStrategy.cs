@@ -7,9 +7,9 @@ namespace JuegoElementos.Core.Strategies
     {
         public string Name => "Humana";
 
-        public Element SelectElement(IReadOnlyList<Element> availableElements)
+        public Element SelectElement(CombatContext context)
         {
-            return elementSelector.RequestElement(availableElements);
+            return elementSelector.RequestElement(context);
         }
     }
 }

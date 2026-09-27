@@ -42,13 +42,16 @@ public class DamageCalculatorTests
     }
 
     [Fact]
-    public void CalculateDamage_UndefinedType_ThrowsArgumentException()
+    public void CalculateDamage_UndefinedType_ReturnsDefaultDamageTen()
     {
         // Arrange
         var unknown = new UnknownType();
         var fire = new FireType();
 
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => _calculator.CalculateDamage(unknown, fire));
+        // Act
+        var damage = _calculator.CalculateDamage(unknown, fire);
+
+        // Assert
+        Assert.Equal(10, damage);
     }
 }

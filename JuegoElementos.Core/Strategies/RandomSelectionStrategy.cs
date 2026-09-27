@@ -7,15 +7,15 @@ namespace JuegoElementos.Core.Strategies
         private readonly Random random = new();
         public string Name => "Aleatoria";
 
-        public Element SelectElement(IReadOnlyList<Element> availableElements)
+        public Element SelectElement(CombatContext context)
         {
-            if (availableElements == null || availableElements.Count == 0)
+            if (context.AvailableElements == null || context.AvailableElements.Count == 0)
             {
                 throw new ArgumentException("Available elements list cannot be null or empty.");
             }
 
-            int randomIndex = random.Next(availableElements.Count);
-            return availableElements[randomIndex];
+            int randomIndex = random.Next(context.AvailableElements.Count);
+            return context.AvailableElements[randomIndex];
         }
     }
 }

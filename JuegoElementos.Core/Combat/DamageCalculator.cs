@@ -2,10 +2,10 @@ using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.Core.Combat
 {
-    public class DamageCalculator
+    public class DamageCalculator :  IDamageCalculator
     {
         //(AttackerType, DefenderType) => Damage against DefenderType
-        public readonly Dictionary<(IElementType Attacker, IElementType Defender), int> DamageMatrix = new()
+        private readonly Dictionary<(IElementType Attacker, IElementType Defender), int> _damageMatrix = new()
         {
             { (new FireType(), new WaterType()), 5 },
             { (new FireType(), new FireType()), 10 },
@@ -20,14 +20,7 @@ namespace JuegoElementos.Core.Combat
 
         public int CalculateDamage(IElementType attacker, IElementType defender)
         {
-            if (DamageMatrix.TryGetValue((attacker, defender), out int damage))
-            {
-                return damage;
-            }
-            else
-            {
-                throw new ArgumentException($"Damage not defined for attacker {attacker.GetType().Name} and defender {defender.GetType().Name}");
-            }
+            return _damageMatrix.GetValueOrDefault((attacker, defender), 10); //10 of default damage
         }
     }
 }

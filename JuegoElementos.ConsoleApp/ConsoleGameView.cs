@@ -4,6 +4,7 @@ using JuegoElementos.Core.Abstractions;
 using JuegoElementos.Core.Domain;
 using JuegoElementos.ConsoleApp.Renderers;
 using JuegoElementos.ConsoleApp.Services;
+using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.ConsoleApp
 {
@@ -206,9 +207,10 @@ namespace JuegoElementos.ConsoleApp
             ShowDuelEnd(winner);
         }
 
-        public Element RequestElement(IReadOnlyList<Element> availableElements)
+        public Element RequestElement(CombatContext context)
         {
-            return RequestElementSelection(availableElements);
+            return RequestElementSelection(context.AvailableElements);
         }
+        
     }
 }
