@@ -7,7 +7,7 @@ using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.ConsoleApp.Renderers;
 
-public class CardRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int healthBarUnits = 10)
+public class ElementRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int healthBarUnits = 10)
 {
     private readonly BoxStyle _boxStyle = boxStyle ?? BoxStyle.Default;
     private readonly HealthBarRenderer _healthBarRenderer = new(healthBarUnits);

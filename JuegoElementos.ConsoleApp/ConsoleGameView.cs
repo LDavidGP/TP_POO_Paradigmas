@@ -8,13 +8,17 @@ using JuegoElementos.ConsoleApp.Services;
 namespace JuegoElementos.ConsoleApp
 {
     public class ConsoleGameView(
-        CardRenderer? cardRenderer = null, 
+        ElementRenderer? elementRenderer = null, 
         CombatLogRenderer? logRenderer = null) : IGameView
     {
-        private readonly CardRenderer _cardRenderer = cardRenderer ?? new();
+        private readonly ElementRenderer _elementRenderer = elementRenderer ?? new();
         private readonly CombatLogRenderer _logRenderer = logRenderer ?? new();
         private readonly CombatLog _combatLog = new();
 
+        private Element? _humanElement;
+        private Element? _aiElement;
+        private int _humanRemaining;
+        private int _aiRemaining;
         private static int GetTerminalWidth() =>
             Console.IsOutputRedirected ? 80 : Math.Max(Console.WindowWidth, 80);
 
@@ -24,27 +28,40 @@ namespace JuegoElementos.ConsoleApp
             Thread.Sleep(300);
         }
 
-        public void ShowBattlefield(Element humanCard, int remHumanCards, Element aiCard, int remAiCards)
+        public void ShowBattlefield(Element humanElement, int remHumanElements, Element aiElement, int remAiElements)
+        {_humanElement = humanElement;
+            _humanRemaining = remHumanElements;
+            _aiElement = aiElement;
+            _aiRemaining = remAiElements;
+            RedrawBattlefield();
+        }
+
+        public void RedrawBattlefield()
         {
+            if (_humanElement == null || _aiElement == null) return;
+
             Console.Clear();
             var width = GetTerminalWidth();
-
-            //headers
             DrawHeader(width);
 
-            // cards
-            var humanLines = _cardRenderer.Render(humanCard);
-            var aiLines = _cardRenderer.Render(aiCard);
+            var sideMargin = 4;
+            var middleGap = Math.Max(4, width - (2 * 22) - (2 * sideMargin));
+            var marginSpaces = new string(' ', sideMargin);
+            var gapSpaces = new string(' ', middleGap);
+
+            // headers
+            var playerHeaderFormat = $"{marginSpaces}{{0,-{22}}}{{1}}{{2,-{22}}}";
+            Console.WriteLine(string.Format(playerHeaderFormat, "[ JUGADOR HUMANO ]", gapSpaces, "[ IA OPONENTE ]"));
+
+            // Element render
+            var humanLines = _elementRenderer.Render(_humanElement);
+            var aiLines = _elementRenderer.Render(_aiElement);
 
             for (var i = 0; i < humanLines.Count; i++)
             {
-                var separator = (i == 2) ? "             VS              " : "                             ";
-                Console.WriteLine($"   {humanLines[i]}{separator}{aiLines[i]}");
+                var centerText = (i == 2) ? CenterText("VS", middleGap) : gapSpaces;
+                Console.WriteLine($"{marginSpaces}{humanLines[i]}{centerText}{aiLines[i]}");
             }
-
-            Console.WriteLine($"   Mazo vivo: {remHumanCards}/5                                     Mazo vivo: {remAiCards}/5\n");
-
-            // logs
             var logLines = _logRenderer.Render(_combatLog, width);
             foreach (var line in logLines)
             {
@@ -107,30 +124,30 @@ namespace JuegoElementos.ConsoleApp
         }
         
 
-        public Element RequestElementSelection(IReadOnlyList<Element> availableCards)
+        public Element RequestElementSelection(IReadOnlyList<Element> aliveElements)
         {
-            ArgumentNullException.ThrowIfNull(availableCards);
+            ArgumentNullException.ThrowIfNull(aliveElements);
 
-            if (availableCards.Count == 0)
+            if (aliveElements.Count == 0)
             {
                 throw new InvalidOperationException("No hay elementos disponibles para seleccionar.");
             }
 
-            Console.WriteLine(" Selecciona una carta:");
+            Console.WriteLine(" Selecciona un elemento:");
 
             // 1. Dibujar la fila de reserva usando el método de extensión ToBadge()
-            for (var i = 0; i < availableCards.Count; i++)
+            for (var i = 0; i < aliveElements.Count; i++)
             {
-                Console.Write($" [{i + 1}] {availableCards[i].ToBadge()}    ");
+                Console.Write($" [{i + 1}] {aliveElements[i].ToBadge()}    ");
             }
             Console.WriteLine("\n");
 
             // 2. Solicitar la entrada al usuario
-            Console.Write($" >> Elige un elemento para enviar al combate (1-{availableCards.Count}): ");
-            var selectedIndex = ConsoleInputReader.ReadOption(1, availableCards.Count);
+            Console.Write($" >> Elige un elemento para enviar al combate (1-{aliveElements.Count}): ");
+            var selectedIndex = ConsoleInputReader.ReadOption(1, aliveElements.Count);
 
             // 3. Mapear de base 1 (UI) a base 0 (Lista)
-            return availableCards[selectedIndex - 1];
+            return aliveElements[selectedIndex - 1];
         }
 
         public void ShowDuelEnd(Player winner)
@@ -153,6 +170,18 @@ namespace JuegoElementos.ConsoleApp
             Console.WriteLine("\n   Fin de la partida");
             Console.WriteLine("   Presiona cualquier tecla para salir...");
             Console.ReadKey(intercept: true);
+        }
+        private static string CenterText(string text, int width)
+        {
+            // Si el texto ya es igual o más largo que el ancho disponible, no hay nada que rellenar
+            if (text.Length >= width) return text;
+
+            // Calculamos la mitad exacta de espacios para la izquierda
+            var left = (width - text.Length) / 2;
+            // El resto de espacios van a la derecha (por si la diferencia es impar)
+            var right = width - text.Length - left;
+
+            return $"{new string(' ', left)}{text}{new string(' ', right)}";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using JuegoElementos.Core.Domain;
+using JuegoElementos.Core.Domain;
 using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.Core.Factories;
@@ -12,7 +12,7 @@ public class DeckFactory
     {
         if (elementCount < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(elementCount), "La cantidad de cartas no puede ser negativa.");
+            throw new ArgumentOutOfRangeException(nameof(elementCount), "La cantidad de elementos no puede ser negativa.");
         }
 
         var elements = new List<Element>(elementCount);

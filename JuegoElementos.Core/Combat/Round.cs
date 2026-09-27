@@ -21,9 +21,12 @@ public class Round(Element attacker, Element defender, DamageCalculator damageCa
 
         while (_attacker.IsAlive && _defender.IsAlive) // <== goes untill one of the elements is dead
         {
+            
             int damageToDefender = damageCalculator.CalculateDamage(_attacker.Type, _defender.Type);
             _defender.TakeDamage(damageToDefender);
             gameView.ShowAttack(_attacker, _defender, damageToDefender); // <== shows the attack in the game view
+            gameView.RedrawBattlefield();
+            //gameView.ShowBattlefield();
             if (!_defender.IsAlive)
             {
                 return _attacker;
@@ -32,6 +35,7 @@ public class Round(Element attacker, Element defender, DamageCalculator damageCa
             int damageToAttacker = damageCalculator.CalculateDamage(_defender.Type, _attacker.Type);
             _attacker.TakeDamage(damageToAttacker);
             gameView.ShowAttack(_defender, _attacker, damageToAttacker); // <== shows the attack in the game view
+            gameView.RedrawBattlefield();
             if (!_attacker.IsAlive)
             {
                 return _defender;

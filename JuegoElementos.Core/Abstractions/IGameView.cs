@@ -13,5 +13,6 @@ namespace JuegoElementos.Core.Abstractions
         void ShowElementDefeated(Player owner, Element defeatedElement);
         Element RequestElementSelection(IReadOnlyList<Element> aliveElements); //To ask the user to pick a new element to play.
         void ShowDuelEnd(Player winner);
+        void RedrawBattlefield();
     }
 }

@@ -14,25 +14,30 @@ public class Duel(Player player1, Player player2, DamageCalculator damageCalcula
 
     public Player GetWinner()
     {
-        var player1Element = _player1.SelectElement();
-        _gameView.ShowElementPresented(_player1, player1Element); // <== Show that player 1 has presented an element
-        var player2Element = _player2.SelectElement();
-        _gameView.ShowElementPresented(_player2, player2Element); // <== Show that player 2 has presented an element
-
+        //Initial selection
+        var element1 = _player1.SelectElement();
+        var element2 = _player2.SelectElement();
+        _gameView.ShowBattlefield(
+            element1,
+            _player1.AliveElements.Count,
+            element2,
+            _player1.AliveElements.Count
+        );
         while (_player1.HasAliveElements && _player2.HasAliveElements)
         {
-            var round = new Round(player1Element, player2Element, _damageCalculator, _gameView);
+            _gameView.ShowBattlefield(element1, player1.AliveElements.Count, element2, player2.AliveElements.Count);
+            var round = new Round(element1, element2, _damageCalculator, _gameView);
             var winnerElement = round.GetWinner();
 
-            if (winnerElement != player1Element)
+            if (winnerElement != element1)
             {
-                _gameView.ShowElementDefeated(_player1, player1Element); // <== Show that player 1's element was defeated
-                if (_player1.HasAliveElements) player1Element = _player1.SelectElement();
+                _gameView.ShowElementDefeated(_player1, element1); // <== Show that player 1's element was defeated
+                if (_player1.HasAliveElements) element1 = _player1.SelectElement();
             }
-            else if (winnerElement != player2Element)
+            else if (winnerElement != element2)
             {
-                _gameView.ShowElementDefeated(_player2, player2Element); // <== Show that player 2's element was defeated
-                if (_player2.HasAliveElements) player2Element = _player2.SelectElement();
+                _gameView.ShowElementDefeated(_player2, element2); // <== Show that player 2's element was defeated
+                if (_player2.HasAliveElements) element2 = _player2.SelectElement();
             }
             else throw new InvalidOperationException("Ronda terminada en un empate, lo cual no debería suceder.");
         }

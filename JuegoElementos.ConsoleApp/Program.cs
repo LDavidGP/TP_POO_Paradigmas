@@ -10,10 +10,10 @@ public static class Program
     private static Random _random = new Random();
     public static void Main()
     {
-        var cardRenderer = new CardRenderer();
+        var elementRenderer = new ElementRenderer();
         var logRenderer = new CombatLogRenderer();
         var damageCalculator = new DamageCalculator();
-        var view = new ConsoleGameView(cardRenderer, logRenderer);
+        var view = new ConsoleGameView(elementRenderer, logRenderer);
         var playerName = view.WelcomePlayer();
         var deckFactory = new DeckFactory();
         var player = new Player(playerName, new HumanSelectionStrategy(view), deckFactory.CreateDeck(5));

@@ -22,7 +22,7 @@ El presente Trabajo Práctico tiene como objetivo aplicar los principios de Prog
 
 Cada elemento posee ventajas y desventajas frente a los demás, generando interacciones estratégicas durante el combate.
 
-A diferencia del juego clásico, cada jugador dispondrá de un conjunto de elementos (cartas/unidades), los cuales tendrán un nivel de energía (vida). Durante cada turno, los elementos se enfrentan y se aplican daños configurables según la combinación de tipos.
+A diferencia del juego clásico, cada jugador dispondrá de un conjunto de elementos (unidades), los cuales tendrán un nivel de energía (vida). Durante cada turno, los elementos se enfrentan y se aplican daños configurables según la combinación de tipos.
 
 El objetivo del juego es reducir la energía del oponente hasta dejarlo sin unidades activas.
 

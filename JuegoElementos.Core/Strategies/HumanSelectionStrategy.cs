@@ -10,10 +10,7 @@ namespace JuegoElementos.Core.Strategies
 
         public Element SelectElement(IReadOnlyList<Element> availableElements)
         {
-            // Este codigo es de test
-            var rand = new Random();
-            var index = rand.Next(availableElements.Count);
-            return availableElements[index];
+            return _gameView.RequestElementSelection(availableElements);
         }
     }
 }
