@@ -9,7 +9,7 @@ namespace JuegoElementos.ConsoleApp
 {
     public class ConsoleGameView(
         ElementRenderer? elementRenderer = null, 
-        CombatLogRenderer? logRenderer = null) : IGameView
+        CombatLogRenderer? logRenderer = null) : IGameView, ICombatEventsListener, IElementSelector
     {
         private readonly ElementRenderer _elementRenderer = elementRenderer ?? new();
         private readonly CombatLogRenderer _logRenderer = logRenderer ?? new();
@@ -182,6 +182,33 @@ namespace JuegoElementos.ConsoleApp
             var right = width - text.Length - left;
 
             return $"{new string(' ', left)}{text}{new string(' ', right)}";
+        }
+
+        public void OnAttackOccurred(Element attacker, Element defender, int damage)
+        {
+            ShowAttack(attacker, defender, damage);
+            RedrawBattlefield();
+        }
+
+        public void OnElementDefeated(Player owner, Element defeatedElement)
+        {
+            ShowElementDefeated(owner, defeatedElement);
+            RedrawBattlefield();
+        }
+
+        public void OnBattlefieldUpdated(Element player1Element, int humanAlive, Element player2Element, int aiAlive)
+        {
+            ShowBattlefield(player1Element, humanAlive, player2Element, aiAlive);
+        }
+
+        public void OnCombatEnded(Player winner)
+        {
+            ShowDuelEnd(winner);
+        }
+
+        public Element RequestElement(IReadOnlyList<Element> availableElements)
+        {
+            return RequestElementSelection(availableElements);
         }
     }
 }

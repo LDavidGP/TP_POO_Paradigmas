@@ -3,42 +3,37 @@ using JuegoElementos.Core.Domain;
 
 namespace JuegoElementos.Core.Combat;
 
-public class Round(Element attacker, Element defender, DamageCalculator damageCalculator, IGameView gameView)
+public class Round(Element attacker, Element defender, DamageCalculator damageCalculator, ICombatEventsListener listener)
 {
 
     // This class is used to calculate the winner of a single round which ends with one element dead
     // The class recieves two elements and the damage calculator and the game view to show the attacks
-
-    private readonly Element _attacker = attacker;
-    private readonly Element _defender = defender;
-
     public Element GetWinner()
     {
-        if (_attacker == null || _defender == null)
+        if (attacker == null || defender == null)
         {
             throw new ArgumentNullException("Atacante o Defensor no pueden ser nulos");
         }
 
-        while (_attacker.IsAlive && _defender.IsAlive) // <== goes untill one of the elements is dead
+        while (attacker.IsAlive && defender.IsAlive) // <== goes untill one of the elements is dead
         {
             
-            int damageToDefender = damageCalculator.CalculateDamage(_attacker.Type, _defender.Type);
-            _defender.TakeDamage(damageToDefender);
-            gameView.ShowAttack(_attacker, _defender, damageToDefender); // <== shows the attack in the game view
-            gameView.RedrawBattlefield();
+            int damageToDefender = damageCalculator.CalculateDamage(attacker.Type, defender.Type);
+            defender.TakeDamage(damageToDefender);
+            listener.OnAttackOccurred(attacker, defender, damageToDefender);
+            
             //gameView.ShowBattlefield();
-            if (!_defender.IsAlive)
+            if (!defender.IsAlive)
             {
-                return _attacker;
+                return attacker;
             }
 
-            int damageToAttacker = damageCalculator.CalculateDamage(_defender.Type, _attacker.Type);
-            _attacker.TakeDamage(damageToAttacker);
-            gameView.ShowAttack(_defender, _attacker, damageToAttacker); // <== shows the attack in the game view
-            gameView.RedrawBattlefield();
-            if (!_attacker.IsAlive)
+            int damageToAttacker = damageCalculator.CalculateDamage(defender.Type, attacker.Type);
+            attacker.TakeDamage(damageToAttacker);
+            listener.OnAttackOccurred(defender, attacker, damageToAttacker);
+            if (!attacker.IsAlive)
             {
-                return _defender;
+                return defender;
             }
         }
 
