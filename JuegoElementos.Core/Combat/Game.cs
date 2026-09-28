@@ -15,11 +15,6 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
 
         while (player1.HasAliveElements && player2.HasAliveElements)
         {
-            if (player2.SelectionStrategy is SuperSelectionStrategy superStrategy)
-            {
-                superStrategy.OpponentElement = p1Element;
-            }
-
             listener.OnBattlefieldUpdated(p1Element, player1.RemainingElements, p2Element, player2.RemainingElements);
 
             var round = new Round(p1Element, p2Element, damageCalculator, listener);
@@ -40,11 +35,6 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
                 listener.OnElementDefeated(player2, p2Element);
                 if (player2.HasAliveElements)
                 {
-                    if (player2.SelectionStrategy is SuperSelectionStrategy superIA)
-                    {
-                        superIA.OpponentElement = p1Element;
-                    }
-
                     var contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
                     p2Element = player2.SelectElement(contextP2);
                 }
@@ -52,6 +42,7 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
         }
 
         var winner = player1.HasAliveElements ? player1 : player2;
+        listener.OnCombatEnded(winner);
         return winner;
     }
 
