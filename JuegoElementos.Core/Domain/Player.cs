@@ -4,7 +4,7 @@ namespace JuegoElementos.Core.Domain
 {
     public class Player(string name, ISelectionStrategy selectionStrategy, Deck? deck = null)
     {
-        private readonly ISelectionStrategy _selectionStrategy = selectionStrategy;
+        public ISelectionStrategy SelectionStrategy { get; set; } = selectionStrategy;
         public string Name { get; private set; } = name;
         public Deck Deck { get; private set; } = deck ?? new Deck([]);
 
@@ -13,7 +13,7 @@ namespace JuegoElementos.Core.Domain
         public Element SelectElement()
         {
             var alive = Deck.Cards.Where(c => c.IsAlive).ToList();
-            return _selectionStrategy.SelectElement(alive);
+            return SelectionStrategy.SelectElement(alive);
         }
     }
 }
