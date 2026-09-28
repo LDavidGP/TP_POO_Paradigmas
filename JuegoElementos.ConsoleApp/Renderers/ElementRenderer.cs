@@ -45,9 +45,11 @@ public class ElementRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int
             var invertSeq = Ansi.GetStyleSequence(new Style(decoration: Decoration.Invert));
             for (var i = 0; i < lines.Count; i++)
             {
-                lines[i] = $"{invertSeq}{lines[i]}{Ansi.Reset}";
+                var lineWithInvert = lines[i].Replace(Ansi.Reset, $"{Ansi.Reset}{invertSeq}");
+                lines[i] = $"{invertSeq}{lineWithInvert}{Ansi.Reset}";
             }
         }
+
         return lines;
     }
 }

@@ -16,13 +16,13 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
         
         var contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
         var p2Element = player2.SelectElement(contextP2);
-        
+
+        var round = new Round(p1Element, p2Element, damageCalculator, listener);
+
         // 2. Combat by rounds main loop 
         while (player1.HasAliveElements && player2.HasAliveElements)
         {
             listener.OnBattlefieldUpdated(p1Element, player1.RemainingElements, p2Element, player2.RemainingElements);
-            
-            var round = new Round(p1Element, p2Element, damageCalculator, listener);
             round.Execute();
 
             if (!p1Element.IsAlive)
@@ -32,6 +32,7 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
                 {
                     contextP1 = new CombatContext(player1.AliveElements, p2Element, damageCalculator);
                     p1Element = player1.SelectElement(contextP1);
+                    round = new Round(p1Element, p2Element, damageCalculator, listener);
                 }
             }
             
@@ -42,6 +43,7 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
                 { 
                     contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
                     p2Element = player2.SelectElement(contextP2);
+                    round = new Round(p2Element, p1Element, damageCalculator, listener);
                 }
             }
         }
