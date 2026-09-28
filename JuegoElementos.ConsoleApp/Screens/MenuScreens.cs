@@ -47,7 +47,7 @@ public static class MenuScreens
         Console.WriteLine(BoxHelper.CreateLine(string.Empty, width, box));
         Console.WriteLine(BoxHelper.CreateLine("   [1] ⚔️  Iniciar Partida", width, box));
         Console.WriteLine(BoxHelper.CreateLine("   [2] 🤖  Elegir Oponente (Inteligencia Artificial)", width, box));
-        Console.WriteLine(BoxHelper.CreateLine("   [3] ⚙️   Configurar Matriz de Daño y Efectividades", width, box));
+        Console.WriteLine(BoxHelper.CreateLine("   [3] ⚙️  Configurar Matriz de Daño y Efectividades", width, box));
         Console.WriteLine(BoxHelper.CreateLine("   [4] 📜  Ver Tabla de Efectividades Actual", width, box));
         Console.WriteLine(BoxHelper.CreateLine("   [5] 👤  Cambiar Nombre de Jugador", width, box));
         Console.WriteLine(BoxHelper.CreateLine("   [6] 🚪  Salir del Juego", width, box));
@@ -132,9 +132,9 @@ public static class MenuScreens
             Console.WriteLine(BoxHelper.CreateLine(string.Empty, width, box));
             Console.WriteLine(BoxHelper.CreateLine("   [1] 📋 Estándar (Reglas oficiales del TP)", width, box));
             Console.WriteLine(BoxHelper.CreateLine("   [2] 💀 Muerte Súbita (Daño duplicado: partidas rápidas y letales)", width, box));
-            Console.WriteLine(BoxHelper.CreateLine("   [3] ⚖️  Táctica Extrema (Ventajas muy marcadas de 30 pts)", width, box));
-            Console.WriteLine(BoxHelper.CreateLine("   [4] ✏️  Personalizar un valor de daño específico", width, box));
-            Console.WriteLine(BoxHelper.CreateLine("   [5] ↩️  Volver al Menú Principal", width, box));
+            Console.WriteLine(BoxHelper.CreateLine("   [3] ⚖️ Táctica Extrema (Ventajas muy marcadas de 30 pts)", width, box));
+            Console.WriteLine(BoxHelper.CreateLine("   [4] ✏️ Personalizar un valor de daño específico", width, box));
+            Console.WriteLine(BoxHelper.CreateLine("   [5] ↩️ Volver al Menú Principal", width, box));
             Console.WriteLine(BoxHelper.CreateLine(string.Empty, width, box));
             Console.WriteLine(BoxHelper.CreateBottomBorder(width, box));
 
