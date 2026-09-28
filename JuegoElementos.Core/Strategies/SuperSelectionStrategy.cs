@@ -1,5 +1,4 @@
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.Core.Strategies
 {
@@ -7,36 +6,30 @@ namespace JuegoElementos.Core.Strategies
     {
         private readonly Random _random = new();
 
-        public string Name => "Super IA";
+        public string Name => "Super";
 
-        // Propiedad opcional para asignar el elemento que puso el jugador humano
         public Element? OpponentElement { get; set; }
 
-        // Constructor vacio por defecto para que no tire error en Program.cs
-        public SuperSelectionStrategy() { }
-
-        // Constructor con parametro opcional
-        public SuperSelectionStrategy(Element opponentElement)
+        public Element SelectElement(CombatContext context)
         {
-            OpponentElement = opponentElement;
-        }
-
-        public Element SelectElement(List<Element> availableElements)
-        {
+            var availableElements = context.AvailableElements;
             if (availableElements == null || availableElements.Count == 0)
             {
-                throw new ArgumentException("La lista de elementos disponibles no puede estar vacía.");
+                throw new InvalidOperationException("La lista de elementos disponibles no puede estar vacía.");
             }
+            Element? targetOpponent = context.OpponentElement ?? OpponentElement;
 
-            if (OpponentElement == null)
+            if (targetOpponent == null)
             {
                 return availableElements[_random.Next(availableElements.Count)];
             }
-
-            double targetHealth = OpponentElement.Health;
+            double targetHealth = targetOpponent.Health;
 
             var lethalElements = availableElements
-                .Select(e => new { Element = e, Damage = CalculateDamage(e, OpponentElement) })
+                .Select(e => new { 
+                    Element = e, 
+                    Damage = context.DamageCalculator.CalculateDamage(e.Type, targetOpponent.Type) 
+                })
                 .Where(x => x.Damage >= targetHealth)
                 .OrderBy(x => x.Damage)
                 .ToList();
@@ -47,31 +40,8 @@ namespace JuegoElementos.Core.Strategies
             }
 
             return availableElements
-                .OrderByDescending(e => CalculateDamage(e, OpponentElement))
+                .OrderByDescending(e => context.DamageCalculator.CalculateDamage(e.Type, targetOpponent.Type))
                 .First();
-        }
-
-        private double CalculateDamage(Element attacker, Element defender)
-        {
-            if (attacker == null || defender == null) return 0;
-
-            if (attacker.Type is WaterType)
-            {
-                if (defender.Type is FireType) return 50;
-                if (defender.Type is EarthType) return 20;
-            }
-            else if (attacker.Type is FireType)
-            {
-                if (defender.Type is EarthType) return 40;
-                if (defender.Type is WaterType) return 20;
-            }
-            else if (attacker.Type is EarthType)
-            {
-                if (defender.Type is WaterType) return 30;
-                if (defender.Type is FireType) return 20;
-            }
-
-            return 20;
         }
     }
 }

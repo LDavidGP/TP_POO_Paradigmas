@@ -4,7 +4,7 @@ namespace JuegoElementos.Core.Strategies
 {
     public interface ISelectionStrategy
     {
-        Element SelectElement(List<Element> availableElements);
         string Name { get; }
+        Element SelectElement(CombatContext context);
     }
 }

@@ -2,18 +2,19 @@ using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.Core.Domain
 {
-    public class Player(string name, ISelectionStrategy selectionStrategy, Deck? deck = null)
+    public class Player(string name, ISelectionStrategy selectionStrategy, Deck deck)
     {
-        public ISelectionStrategy SelectionStrategy { get; set; } = selectionStrategy;
         public string Name { get; private set; } = name;
-        public Deck Deck { get; private set; } = deck ?? new Deck([]);
+        public ISelectionStrategy SelectionStrategy => selectionStrategy;
+        public bool HasAliveElements => deck.HasAliveElements;
+        public IReadOnlyList<Element> Elements => deck.Elements;
+        public IReadOnlyList<Element> AliveElements => deck.AliveElements;
+        public int RemainingElements => deck.RemainingAliveCount;
 
-        public bool HasAliveElements => Deck.Cards.Any(c => c.IsAlive);
-
-        public Element SelectElement()
+        public Element SelectElement(CombatContext context)
         {
-            var alive = Deck.Cards.Where(c => c.IsAlive).ToList();
-            return SelectionStrategy.SelectElement(alive);
+            return !HasAliveElements ? throw new InvalidOperationException("No hay elementos vivos para seleccionar.") 
+                : selectionStrategy.SelectElement(context);
         }
     }
 }

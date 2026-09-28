@@ -1,0 +1,153 @@
+@startuml ClassDiagram_Core
+
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+package "Domain" {
+    class Element {
+        + Type: IElementType
+        + MaxHealth: int
+        + Health: int
+        + IsAlive: bool
+        + TakeDamage(damage: int): void
+    }
+
+    class Deck {
+        + Elements: IReadOnlyList<Element>
+        + AliveElements: IReadOnlyList<Element>
+        + HasAliveElements: bool
+        + RemainingAliveCount: int
+        + GetElementAt(index: int): Element
+    }
+
+    class Player {
+        + Name: string
+        + HasAliveElements: bool
+        + AliveElements: IReadOnlyList<Element>
+        + RemainingElements: int
+        + SelectElement(context: CombatContext): Element
+    }
+}
+
+package "ElementTypes" {
+    interface IElementType {
+        + Name: string
+    }
+
+    class FireType implements IElementType {
+        + Name: string
+    }
+
+    class WaterType implements IElementType {
+        + Name: string
+    }
+
+    class EarthType implements IElementType {
+        + Name: string
+    }
+}
+
+package "Combat" {
+    interface IDamageCalculator {
+        + CalculateDamage(attacker: IElementType, defender: IElementType): int
+    }
+
+    class DamageCalculator implements IDamageCalculator {
+        + CalculateDamage(attacker: IElementType, defender: IElementType): int
+    }
+
+    class Round {
+        + Execute(): void
+    }
+
+    class Game {
+        + IsFinished: bool
+        + Play(): Player
+    }
+}
+
+package "Strategies" {
+    interface ISelectionStrategy {
+        + Name: string
+        + SelectElement(context: CombatContext): Element
+    }
+
+    class CombatContext {
+        + AvailableElements: IReadOnlyList<Element>
+        + OpponentElement: Element?
+        + DamageCalculator: IDamageCalculator
+    }
+
+    class HumanSelectionStrategy implements ISelectionStrategy {
+        + Name: string
+        + SelectElement(context: CombatContext): Element
+    }
+
+    class RandomSelectionStrategy implements ISelectionStrategy {
+        + Name: string
+        + SelectElement(context: CombatContext): Element
+    }
+
+    class StrategicSelectionStrategy implements ISelectionStrategy {
+        + Name: string
+        + SelectElement(context: CombatContext): Element
+    }
+
+    class SuperSelectionStrategy implements ISelectionStrategy {
+        + Name: string
+        + SelectElement(context: CombatContext): Element
+    }
+}
+
+package "Abstractions" {
+    interface ICombatEventsListener {
+        + OnAttackOccurred(attacker: Element, defender: Element, damage: int): void
+        + OnElementDefeated(owner: Player, defeatedElement: Element): void
+        + OnBattlefieldUpdated(p1: Element, p1Remaining: int, p2: Element, p2Remaining: int): void
+        + OnCombatEnded(winner: Player): void
+    }
+
+    interface IElementSelector {
+        + RequestElement(context: CombatContext): Element
+    }
+}
+
+package "Factories" {
+    class DeckFactory {
+        + CreateDeck(elementCount: int): Deck
+        + CreateDeck(elements: List<Element>): Deck
+    }
+}
+
+' Relaciones del Dominio
+Player --> Deck : "deck"
+Player --> ISelectionStrategy : "selectionStrategy"
+Deck o-- Element : "contains *"
+Element --> IElementType : "type"
+
+' Relaciones de Combate
+Game --> Player : "player1, player2"
+Game --> IDamageCalculator : "damageCalculator"
+Game --> ICombatEventsListener : "listener"
+Game ..> Round : "creates & executes"
+
+Round --> Element : "attacker, defender"
+Round --> IDamageCalculator : "damageCalculator"
+Round --> ICombatEventsListener : "listener"
+
+DamageCalculator ..> IElementType : "evaluates"
+
+' Relaciones de Estrategias y Abstracciones
+HumanSelectionStrategy --> IElementSelector : "selector"
+ISelectionStrategy ..> CombatContext : "receives"
+CombatContext --> Element : "references"
+CombatContext --> IDamageCalculator : "references"
+
+' Relaciones de Fábrica
+DeckFactory ..> Deck : "creates"
+DeckFactory ..> Element : "creates"
+DeckFactory ..> IElementType : "uses"
+
+@enduml

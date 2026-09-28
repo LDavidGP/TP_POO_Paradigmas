@@ -1,21 +1,30 @@
 using JuegoElementos.Core.Domain;
 using JuegoElementos.Core.ElementTypes;
-
-namespace JuegoElementos.Core.Factories
+namespace JuegoElementos.Core.Factories;
+public class DeckFactory(IReadOnlyList<Func<IElementType>>? customAvailableTypes = null)
 {
-    public class DeckFactory
+    private readonly IReadOnlyList<Func<IElementType>> _availableTypes = customAvailableTypes ??
+    [
+        () => new EarthType(), 
+        () => new WaterType(), 
+        () => new FireType()
+    ];
+    
+    public Deck CreateDeck(int elementCount)
     {
-        public Deck? CreateDeck()
+        ArgumentOutOfRangeException.ThrowIfNegative(elementCount, nameof(elementCount));
+        var elements = new List<Element>(elementCount);
+        
+        for (var i = 0; i < elementCount; i++)
         {
-            List<Element> cards = [
-                new Element(new EarthType()),
-                new Element(new EarthType()),
-                new Element(new EarthType()),
-                new Element(new EarthType()),
-                new Element(new EarthType()),
-            ];
-
-            return new Deck(cards);
+            var factoryMethod = _availableTypes[Random.Shared.Next(_availableTypes.Count)];
+            elements.Add(new Element(factoryMethod()));
         }
+        return new Deck(elements);
+    }
+
+    public static Deck CreateDeck(List<Element>? elements = null)
+    {
+        return elements == null ? new Deck([]) : new Deck(elements);
     }
 }
