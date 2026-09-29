@@ -1,7 +1,5 @@
-namespace JuegoElementos.Core.ElementTypes
-{
+namespace JuegoElementos.Core.ElementsTypes;
     public interface IElementType
     {
         string Name { get; }
     }
-}

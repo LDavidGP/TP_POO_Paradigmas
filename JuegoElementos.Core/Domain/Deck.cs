@@ -1,12 +1,11 @@
-namespace JuegoElementos.Core.Domain
-{
+namespace JuegoElementos.Core.Domain;
     public class Deck
     {
         private readonly List<Element> _elements;
         public Deck(IEnumerable<Element> elements)
         {
             ArgumentNullException.ThrowIfNull(elements);
-            _elements = new List<Element>(elements); //Copia
+            _elements = [.. elements];
         }
         public IReadOnlyList<Element> Elements => _elements.AsReadOnly();
         
@@ -25,4 +24,3 @@ namespace JuegoElementos.Core.Domain
             return _elements[index];
         }
     }
-}

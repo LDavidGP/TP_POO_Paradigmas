@@ -1,7 +1,6 @@
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 
-namespace JuegoElementos.Core.Combat
-{
+namespace JuegoElementos.Core.Combat;
     public class DamageCalculator(IDictionary<(IElementType Attacker, IElementType Defender), int>? customMatrix = null) :  IDamageCalculator
     {
         //(AttackerType, DefenderType) => Damage against DefenderType
@@ -28,4 +27,3 @@ namespace JuegoElementos.Core.Combat
             return _damageMatrix.GetValueOrDefault((attacker, defender), 10); //10 of default damage
         }
     }
-}

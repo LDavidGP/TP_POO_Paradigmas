@@ -2,7 +2,7 @@ namespace JuegoElementos.ConsoleApp.Models;
 
 public class CombatLog
 {
-    private Queue<string> _logQueue = new();
+    private readonly Queue<string> _logQueue = new();
     private const int MaxLines = 3;
 
     public IReadOnlyList<string> GetVisibleLines()
@@ -21,6 +21,4 @@ public class CombatLog
             _logQueue.Dequeue();
         _logQueue.Enqueue(msg);
     }
-    
-    public void Clear() => _logQueue.Clear();
 }

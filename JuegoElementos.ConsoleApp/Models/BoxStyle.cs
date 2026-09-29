@@ -5,15 +5,15 @@ namespace JuegoElementos.ConsoleApp.Models;
 /// </summary>
 public record struct BoxStyle
 {
-    public char TopLeftCorner { get; init; }
-    public char TopRightCorner { get; init; }
-    public char BottomLeftCorner { get; init; }
-    public char BottomRightCorner { get; init; }
+    public char TopLeftCorner { get; }
+    public char TopRightCorner { get; }
+    public char BottomLeftCorner { get; }
+    public char BottomRightCorner { get; }
 
-    public char HorizontalLineTop { get; init; }
-    public char HorizontalLineBottom { get; init; }
-    public char VerticalLineLeft { get; init; }
-    public char VerticalLineRight { get; init; }
+    public char HorizontalLineTop { get; }
+    public char HorizontalLineBottom { get; }
+    public char VerticalLineLeft { get; }
+    public char VerticalLineRight { get; }
 
     /// <summary>
     /// Creates a new box style.

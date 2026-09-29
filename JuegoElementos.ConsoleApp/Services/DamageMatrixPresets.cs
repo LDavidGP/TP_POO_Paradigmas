@@ -1,4 +1,4 @@
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 
 namespace JuegoElementos.ConsoleApp.Services;
 

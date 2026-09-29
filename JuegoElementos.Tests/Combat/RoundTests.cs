@@ -1,7 +1,7 @@
 using JuegoElementos.Core.Abstractions;
 using JuegoElementos.Core.Combat;
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 using Xunit;
 
 namespace JuegoElementos.Tests.Combat;

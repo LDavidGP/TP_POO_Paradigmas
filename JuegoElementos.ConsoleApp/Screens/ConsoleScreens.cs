@@ -59,13 +59,11 @@ public static class ConsoleScreens
             Console.Write("  ➤ Tu Nombre: ");
             name = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n  ⚠️  El nombre no puede estar vacío. Por favor, intenta de nuevo.");
-                Console.ResetColor();
-                Thread.Sleep(900);
-            }
+            if (!string.IsNullOrWhiteSpace(name)) continue;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n  ⚠️  El nombre no puede estar vacío. Por favor, intenta de nuevo.");
+            Console.ResetColor();
+            Thread.Sleep(900);
         } while (string.IsNullOrWhiteSpace(name));
 
         var cleanName = name.Trim();

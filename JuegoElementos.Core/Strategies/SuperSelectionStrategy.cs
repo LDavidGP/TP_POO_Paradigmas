@@ -1,7 +1,6 @@
 using JuegoElementos.Core.Domain;
 
-namespace JuegoElementos.Core.Strategies
-{
+namespace JuegoElementos.Core.Strategies;
     public class SuperSelectionStrategy : ISelectionStrategy
     {
 
@@ -31,7 +30,7 @@ namespace JuegoElementos.Core.Strategies
                 .OrderBy(x => x.Damage)
                 .ToList();
 
-            if (lethalElements.Any())
+            if (lethalElements is { Count: > 0 })
             {
                 return lethalElements.First().Element;
             }
@@ -41,4 +40,3 @@ namespace JuegoElementos.Core.Strategies
                 .First();
         }
     }
-}

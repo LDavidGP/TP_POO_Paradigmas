@@ -1,5 +1,5 @@
 using JuegoElementos.ConsoleApp.Services;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.ConsoleApp.Models;

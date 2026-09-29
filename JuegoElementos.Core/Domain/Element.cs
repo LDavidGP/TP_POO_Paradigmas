@@ -1,7 +1,6 @@
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 
-namespace JuegoElementos.Core.Domain
-{
+namespace JuegoElementos.Core.Domain;
     public class Element
     {
         public IElementType Type { get; }
@@ -23,7 +22,7 @@ namespace JuegoElementos.Core.Domain
             }
             if (damage < 0)
             {
-                throw new ArgumentException("Damage cannot be negative", nameof(damage));
+                throw new ArgumentException("El daño no puede ser negativo", nameof(damage));
             }
             Health -= damage;
             if (Health < 0)
@@ -32,4 +31,3 @@ namespace JuegoElementos.Core.Domain
             }
         }
     }
-}
