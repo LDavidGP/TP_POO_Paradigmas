@@ -3,7 +3,7 @@ using JuegoElementos.ConsoleApp.Enums;
 using JuegoElementos.ConsoleApp.Input;
 using JuegoElementos.ConsoleApp.Models;
 using JuegoElementos.ConsoleApp.Services;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 using JuegoElementos.Core.Strategies;
 
 namespace JuegoElementos.ConsoleApp.Screens;

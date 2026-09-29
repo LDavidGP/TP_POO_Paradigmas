@@ -8,7 +8,7 @@ public static class BoxHelper
     //To ignore the Ansi and calculate correctly
     private static readonly Regex AnsiRegex = new(@"\e\[[0-9;]*m", RegexOptions.Compiled);
 
-    public static int GetVisibleLength(string text) =>
+    private static int GetVisibleLength(string text) =>
         string.IsNullOrEmpty(text) ? 0 : AnsiRegex.Replace(text, "").Length;
 
     public static string CreateTopBorder(int width, BoxStyle box) =>

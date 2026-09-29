@@ -1,8 +1,6 @@
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
 
-namespace JuegoElementos.Core.Strategies
-{
+namespace JuegoElementos.Core.Strategies;
     public class StrategicSelectionStrategy : ISelectionStrategy
     {
         public string Name => "Estratégica";
@@ -18,7 +16,7 @@ namespace JuegoElementos.Core.Strategies
             if(context.OpponentElement is null)
                 return availableElements[Random.Shared.Next(availableElements.Count)];
 
-            Element bestElement = availableElements[0];
+            var bestElement = availableElements[0];
             var maxDamage = -1;
 
             foreach (var element in availableElements)
@@ -32,4 +30,3 @@ namespace JuegoElementos.Core.Strategies
             return bestElement;
         }
     }
-}

@@ -1,11 +1,9 @@
 using JuegoElementos.Core.Strategies;
 
-namespace JuegoElementos.Core.Domain
-{
+namespace JuegoElementos.Core.Domain;
     public class Player(string name, ISelectionStrategy selectionStrategy, Deck deck)
     {
         public string Name { get; private set; } = name;
-        public ISelectionStrategy SelectionStrategy => selectionStrategy;
         public bool HasAliveElements => deck.HasAliveElements;
         public IReadOnlyList<Element> Elements => deck.Elements;
         public IReadOnlyList<Element> AliveElements => deck.AliveElements;
@@ -17,4 +15,3 @@ namespace JuegoElementos.Core.Domain
                 : selectionStrategy.SelectElement(context);
         }
     }
-}

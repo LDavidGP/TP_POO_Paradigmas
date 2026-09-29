@@ -1,5 +1,5 @@
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 using Xunit;
 
 namespace JuegoElementos.Tests.Domain;

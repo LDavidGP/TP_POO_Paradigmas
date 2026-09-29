@@ -1,9 +1,7 @@
-using System.Drawing;
 using JuegoElementos.ConsoleApp.Enums;
 using JuegoElementos.ConsoleApp.Models;
 using JuegoElementos.ConsoleApp.Services;
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
 
 namespace JuegoElementos.ConsoleApp.Renderers;
 
@@ -40,14 +38,12 @@ public class ElementRenderer(BoxStyle? boxStyle = null, int totalWidth = 22, int
         // row 5
         lines.Add(BoxHelper.CreateBottomBorder(_totalWidth, _boxStyle));
 
-        if (isInverted)
+        if (!isInverted) return lines;
+        var invertSeq = Ansi.GetStyleSequence(new Style(decoration: Decoration.Invert));
+        for (var i = 0; i < lines.Count; i++)
         {
-            var invertSeq = Ansi.GetStyleSequence(new Style(decoration: Decoration.Invert));
-            for (var i = 0; i < lines.Count; i++)
-            {
-                var lineWithInvert = lines[i].Replace(Ansi.Reset, $"{Ansi.Reset}{invertSeq}");
-                lines[i] = $"{invertSeq}{lineWithInvert}{Ansi.Reset}";
-            }
+            var lineWithInvert = lines[i].Replace(Ansi.Reset, $"{Ansi.Reset}{invertSeq}");
+            lines[i] = $"{invertSeq}{lineWithInvert}{Ansi.Reset}";
         }
 
         return lines;

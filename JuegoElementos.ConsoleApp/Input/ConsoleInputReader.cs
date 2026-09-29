@@ -15,5 +15,5 @@ public static class ConsoleInputReader
 
             Console.Write($" Entrada inválida. Ingrese un número entre {min} y {max}: ");
         }
-        }
     }
+}

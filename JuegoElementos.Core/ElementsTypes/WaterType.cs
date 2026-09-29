@@ -1,7 +1,5 @@
-namespace JuegoElementos.Core.ElementTypes
-{
+namespace JuegoElementos.Core.ElementsTypes;
     public record WaterType : IElementType
     {
-        public string Name => "Water";
+        public string Name => "Agua";
     }
-}

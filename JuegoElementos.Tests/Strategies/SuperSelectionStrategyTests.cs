@@ -1,6 +1,6 @@
 using JuegoElementos.Core.Combat;
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 using JuegoElementos.Core.Strategies;
 using Xunit;
 

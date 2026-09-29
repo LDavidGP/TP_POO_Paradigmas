@@ -10,10 +10,9 @@ public class CombatLogRenderer(BoxStyle? boxStyle = null)
     
     public IReadOnlyList<string> Render(CombatLog combatLog, int width)
     {
-        var lines = new List<string>(capacity: 6);
-
-        // top border
-        lines.Add(BoxHelper.CreateTopBorder(width, _boxStyle));
+        var lines = new List<string>(capacity: 6) {
+            // top border
+            BoxHelper.CreateTopBorder(width, _boxStyle) };
 
         // header
         var titleStyle = new Style(decoration: Decoration.Bold);
@@ -22,14 +21,10 @@ public class CombatLogRenderer(BoxStyle? boxStyle = null)
 
         // content
         var logEntries = combatLog.GetVisibleLines();
-        foreach (var entry in logEntries)
-        {
-            var lineText = string.IsNullOrWhiteSpace(entry) 
-                ? "  >" 
-                : $"  > {entry}";
-
-            lines.Add(BoxHelper.CreateLine(lineText, width, _boxStyle));
-        }
+        lines.AddRange(logEntries.Select(entry => string.IsNullOrWhiteSpace(entry)
+                ? "  >"
+                : $"  > {entry}")
+            .Select(lineText => BoxHelper.CreateLine(lineText, width, _boxStyle)));
         // bottom border
         lines.Add(BoxHelper.CreateBottomBorder(width, _boxStyle));
 

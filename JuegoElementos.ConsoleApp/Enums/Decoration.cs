@@ -51,5 +51,5 @@ public enum Decoration
     /// <summary>
     /// Strikes through the character.
     /// </summary>
-    Strikethrough = 1 << 7,
+    Strikethrough = 1 << 7
 }

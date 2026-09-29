@@ -7,12 +7,11 @@ using JuegoElementos.ConsoleApp.Screens;
 using JuegoElementos.ConsoleApp.Services;
 using JuegoElementos.Core.Strategies;
 
-namespace JuegoElementos.ConsoleApp
-{
+namespace JuegoElementos.ConsoleApp;
     public class ConsoleGameView(
         BattlefieldRenderer? battlefieldRenderer = null): ICombatEventsListener, IElementSelector
     {
-        private readonly BattlefieldRenderer _battlefieldRenderer = battlefieldRenderer ?? new();
+        private readonly BattlefieldRenderer _battlefieldRenderer = battlefieldRenderer ?? new BattlefieldRenderer();
         private readonly CombatLog _combatLog = new();
 
         private Element? _p1Element;
@@ -20,11 +19,9 @@ namespace JuegoElementos.ConsoleApp
         private int _humanRemaining;
         private int _aiRemaining;
 
-        public string WelcomePlayer() => ConsoleScreens.ShowWelcome();
-
-        public void ShowGameStart(Player p1, Player p2, string strategyName) => 
+        public static void ShowGameStart(Player p1, Player p2, string strategyName) => 
             ConsoleScreens.ShowGameStart(p1,p2, strategyName,
-                _battlefieldRenderer.GetTerminalWidth());
+                BattlefieldRenderer.GetTerminalWidth());
 
         public Element RequestElement(CombatContext context)
         {
@@ -90,7 +87,7 @@ namespace JuegoElementos.ConsoleApp
 
         public void OnCombatEnded(Player winner)
         {
-            ConsoleScreens.ShowDuelEnd(winner, _battlefieldRenderer.GetTerminalWidth());
+            ConsoleScreens.ShowDuelEnd(winner, BattlefieldRenderer.GetTerminalWidth());
         }
         
         private void Redraw()
@@ -99,4 +96,3 @@ namespace JuegoElementos.ConsoleApp
             _battlefieldRenderer.Render(_p1Element, _humanRemaining, _p2Element, _aiRemaining, _combatLog);
         }
     }
-}

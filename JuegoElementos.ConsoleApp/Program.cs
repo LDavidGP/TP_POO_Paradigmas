@@ -73,7 +73,7 @@ public static class Program
         var opponentStrategy = settings.CreateOpponentStrategy();
         var opponent = new Player("IA", opponentStrategy, deckFactory.CreateDeck(5));
 
-        view.ShowGameStart(player, opponent, opponentStrategy.Name);
+        ConsoleGameView.ShowGameStart(player, opponent, opponentStrategy.Name);
 
         var game = new Game(player, opponent, damageCalculator, view);
         game.Play();

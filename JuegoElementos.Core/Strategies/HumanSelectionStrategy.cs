@@ -1,8 +1,7 @@
 using JuegoElementos.Core.Abstractions;
 using JuegoElementos.Core.Domain;
 
-namespace JuegoElementos.Core.Strategies
-{
+namespace JuegoElementos.Core.Strategies;
     public class HumanSelectionStrategy(IElementSelector elementSelector) : ISelectionStrategy
     {
         public string Name => "Humana";
@@ -12,4 +11,3 @@ namespace JuegoElementos.Core.Strategies
             return elementSelector.RequestElement(context);
         }
     }
-}

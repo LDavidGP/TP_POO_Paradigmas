@@ -2,7 +2,7 @@ using System.Drawing;
 using JuegoElementos.ConsoleApp.Enums;
 using JuegoElementos.ConsoleApp.Models;
 using JuegoElementos.Core.Domain;
-using JuegoElementos.Core.ElementTypes;
+using JuegoElementos.Core.ElementsTypes;
 
 namespace JuegoElementos.ConsoleApp.Services;
 
@@ -17,7 +17,6 @@ public static class ElementVisuals
     };
 
     public static Style GetStyle(IElementType type) => GetVisuals(type).Style;
-    public static string GetIcon(IElementType type) => GetVisuals(type).Icon;
 
     extension(Element element)
     {

@@ -1,7 +1,5 @@
-namespace JuegoElementos.Core.ElementTypes
-{
+namespace JuegoElementos.Core.ElementsTypes;
     public record FireType : IElementType
     {
-        public string Name => "Fire";
+        public string Name => "Fuego";
     }
-}

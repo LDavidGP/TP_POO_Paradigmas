@@ -10,8 +10,8 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
 
    public Player Play()
     {
-        Element p1Element = player1.SelectElement(new CombatContext(player1.AliveElements, null, damageCalculator));
-        Element p2Element = player2.SelectElement(new CombatContext(player2.AliveElements, p1Element, damageCalculator));
+        var p1Element = player1.SelectElement(new CombatContext(player1.AliveElements, null, damageCalculator));
+        var p2Element = player2.SelectElement(new CombatContext(player2.AliveElements, p1Element, damageCalculator));
 
         while (player1.HasAliveElements && player2.HasAliveElements)
         {
@@ -30,22 +30,15 @@ public class Game(Player player1, Player player2, IDamageCalculator damageCalcul
                 }
             }
 
-            if (!p2Element.IsAlive)
-            {
-                listener.OnElementDefeated(player2, p2Element);
-                if (player2.HasAliveElements)
-                {
-                    var contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
-                    p2Element = player2.SelectElement(contextP2);
-                }
-            }
+            if (p2Element.IsAlive) continue;
+            listener.OnElementDefeated(player2, p2Element);
+            if (!player2.HasAliveElements) continue;
+            var contextP2 = new CombatContext(player2.AliveElements, p1Element, damageCalculator);
+            p2Element = player2.SelectElement(contextP2);
         }
 
         var winner = player1.HasAliveElements ? player1 : player2;
         listener.OnCombatEnded(winner);
         return winner;
     }
-
-    public Player Start() => Play();
-    public Player GetWinner() => Play();
 }

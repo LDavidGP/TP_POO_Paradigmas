@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Text;
 using JuegoElementos.ConsoleApp.Enums;
@@ -9,10 +8,10 @@ namespace JuegoElementos.ConsoleApp.Renderers;
 
 public class HealthBarRenderer(int totalUnits)
 {
-    public int TotalUnits { get; } = totalUnits;
+    private int TotalUnits { get; } = totalUnits;
     public string GetHealthBar(int currentHealth, int maxHealth)
     {
-        var coloredUnits = Math.Clamp((currentHealth * TotalUnits)/ maxHealth, 0, TotalUnits);
+        var coloredUnits = Math.Clamp(currentHealth * TotalUnits/ maxHealth, 0, TotalUnits);
         if (currentHealth > 0 && coloredUnits == 0)
             coloredUnits = 1;
         var barBuilder = new StringBuilder();
